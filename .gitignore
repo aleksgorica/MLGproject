@@ -1,0 +1,4 @@
+dataset/*
+!dataset/note.txt
+.vscode
+__pycache__
