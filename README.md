@@ -3,6 +3,7 @@
 ## Running
  - If running from local, set env variable `DATASET_PATH` to path of your local dataset folder.
  - If running from colab, just run and use Google GPU :)
+ - Running GAT: very important, to make sure `concat=False` in `GATConv` layer. Otherwise, it will not work. See [here](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.nn.conv.GATConv.html#torch_geometric.nn.conv.GATConv) for more info.
 
 ### Config
 There are two configs:
