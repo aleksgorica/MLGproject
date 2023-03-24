@@ -20,7 +20,7 @@ There are two configs:
 - K-fold splitting or validation set?
 - Seaborn palette for nicer plots
 - Discuss about preprocessing (preprocess before DataFrame -> Graph or in model forward pass?)
-
+- Printing F1 score on train, test set for each epoch instead of CrossEntropy
 ## Dataset
 Is available at [Kaggle](https://www.kaggle.com/datasets/ellipticco/elliptic-data-set?resource=download)
 
