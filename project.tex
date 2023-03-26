@@ -1,0 +1,3504 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{project}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \begin{quote}
+Our stories usually start with a line like:
+
+$ \forall \epsilon \textgreater{} 0 , \; \exists \delta \textgreater{} 0 \; \ldots{} $
+
+But this time, we proudly start it with
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ torch\_geometric}
+\end{Highlighting}
+\end{Shaded}
+\end{quote}
+
+Our blog post: https://medium.com/@nm8144/a7a40caeb959
+
+Account name: Nina Mislej - @nm8144
+
+Authors: Nina Mislej, Aljaž Medič, Aleks Stepančič, Luka Sabotič
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Install dependencies}
+\PY{o}{\PYZpc{}}\PY{k}{pip} install torch\PYZhy{}geometric
+\PY{o}{\PYZpc{}}\PY{k}{pip} install torch\PYZhy{}scatter \PYZhy{}f https://data.pyg.org/whl/torch\PYZhy{}1.13.1+cu116.html
+\PY{o}{\PYZpc{}}\PY{k}{pip} install torch\PYZhy{}sparse \PYZhy{}f https://data.pyg.org/whl/torch\PYZhy{}1.13.1+cu116.html
+\PY{o}{\PYZpc{}}\PY{k}{pip} install seaborn optuna
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Looking in indexes: https://pypi.org/simple, https://us-python.pkg.dev/colab-
+wheels/public/simple/
+Requirement already satisfied: torch-geometric in /usr/local/lib/python3.9/dist-
+packages (2.3.0)
+Requirement already satisfied: numpy in /usr/local/lib/python3.9/dist-packages
+(from torch-geometric) (1.22.4)
+Requirement already satisfied: scikit-learn in /usr/local/lib/python3.9/dist-
+packages (from torch-geometric) (1.2.2)
+Requirement already satisfied: pyparsing in /usr/local/lib/python3.9/dist-
+packages (from torch-geometric) (3.0.9)
+Requirement already satisfied: tqdm in /usr/local/lib/python3.9/dist-packages
+(from torch-geometric) (4.65.0)
+Requirement already satisfied: psutil>=5.8.0 in /usr/local/lib/python3.9/dist-
+packages (from torch-geometric) (5.9.4)
+Requirement already satisfied: scipy in /usr/local/lib/python3.9/dist-packages
+(from torch-geometric) (1.10.1)
+Requirement already satisfied: requests in /usr/local/lib/python3.9/dist-
+packages (from torch-geometric) (2.27.1)
+Requirement already satisfied: jinja2 in /usr/local/lib/python3.9/dist-packages
+(from torch-geometric) (3.1.2)
+Requirement already satisfied: MarkupSafe>=2.0 in /usr/local/lib/python3.9/dist-
+packages (from jinja2->torch-geometric) (2.1.2)
+Requirement already satisfied: certifi>=2017.4.17 in
+/usr/local/lib/python3.9/dist-packages (from requests->torch-geometric)
+(2022.12.7)
+Requirement already satisfied: charset-normalizer\textasciitilde{}=2.0.0 in
+/usr/local/lib/python3.9/dist-packages (from requests->torch-geometric) (2.0.12)
+Requirement already satisfied: urllib3<1.27,>=1.21.1 in
+/usr/local/lib/python3.9/dist-packages (from requests->torch-geometric)
+(1.26.15)
+Requirement already satisfied: idna<4,>=2.5 in /usr/local/lib/python3.9/dist-
+packages (from requests->torch-geometric) (3.4)
+Requirement already satisfied: joblib>=1.1.1 in /usr/local/lib/python3.9/dist-
+packages (from scikit-learn->torch-geometric) (1.1.1)
+Requirement already satisfied: threadpoolctl>=2.0.0 in
+/usr/local/lib/python3.9/dist-packages (from scikit-learn->torch-geometric)
+(3.1.0)
+Looking in indexes: https://pypi.org/simple, https://us-python.pkg.dev/colab-
+wheels/public/simple/
+Looking in links: https://data.pyg.org/whl/torch-1.13.1+cu116.html
+Requirement already satisfied: torch-scatter in /usr/local/lib/python3.9/dist-
+packages (2.1.1+pt113cu116)
+Looking in indexes: https://pypi.org/simple, https://us-python.pkg.dev/colab-
+wheels/public/simple/
+Looking in links: https://data.pyg.org/whl/torch-1.13.1+cu116.html
+Requirement already satisfied: torch-sparse in /usr/local/lib/python3.9/dist-
+packages (0.6.17+pt113cu116)
+Requirement already satisfied: scipy in /usr/local/lib/python3.9/dist-packages
+(from torch-sparse) (1.10.1)
+Requirement already satisfied: numpy<1.27.0,>=1.19.5 in
+/usr/local/lib/python3.9/dist-packages (from scipy->torch-sparse) (1.22.4)
+Looking in indexes: https://pypi.org/simple, https://us-python.pkg.dev/colab-
+wheels/public/simple/
+Requirement already satisfied: seaborn in /usr/local/lib/python3.9/dist-packages
+(0.12.2)
+Requirement already satisfied: optuna in /usr/local/lib/python3.9/dist-packages
+(3.1.0)
+Requirement already satisfied: matplotlib!=3.6.1,>=3.1 in
+/usr/local/lib/python3.9/dist-packages (from seaborn) (3.7.1)
+Requirement already satisfied: pandas>=0.25 in /usr/local/lib/python3.9/dist-
+packages (from seaborn) (1.4.4)
+Requirement already satisfied: numpy!=1.24.0,>=1.17 in
+/usr/local/lib/python3.9/dist-packages (from seaborn) (1.22.4)
+Requirement already satisfied: cmaes>=0.9.1 in /usr/local/lib/python3.9/dist-
+packages (from optuna) (0.9.1)
+Requirement already satisfied: PyYAML in /usr/local/lib/python3.9/dist-packages
+(from optuna) (6.0)
+Requirement already satisfied: tqdm in /usr/local/lib/python3.9/dist-packages
+(from optuna) (4.65.0)
+Requirement already satisfied: sqlalchemy>=1.3.0 in
+/usr/local/lib/python3.9/dist-packages (from optuna) (1.4.47)
+Requirement already satisfied: colorlog in /usr/local/lib/python3.9/dist-
+packages (from optuna) (6.7.0)
+Requirement already satisfied: packaging>=20.0 in /usr/local/lib/python3.9/dist-
+packages (from optuna) (23.0)
+Requirement already satisfied: alembic>=1.5.0 in /usr/local/lib/python3.9/dist-
+packages (from optuna) (1.10.2)
+Requirement already satisfied: typing-extensions>=4 in
+/usr/local/lib/python3.9/dist-packages (from alembic>=1.5.0->optuna) (4.5.0)
+Requirement already satisfied: Mako in /usr/local/lib/python3.9/dist-packages
+(from alembic>=1.5.0->optuna) (1.2.4)
+Requirement already satisfied: pillow>=6.2.0 in /usr/local/lib/python3.9/dist-
+packages (from matplotlib!=3.6.1,>=3.1->seaborn) (8.4.0)
+Requirement already satisfied: fonttools>=4.22.0 in
+/usr/local/lib/python3.9/dist-packages (from matplotlib!=3.6.1,>=3.1->seaborn)
+(4.39.2)
+Requirement already satisfied: kiwisolver>=1.0.1 in
+/usr/local/lib/python3.9/dist-packages (from matplotlib!=3.6.1,>=3.1->seaborn)
+(1.4.4)
+Requirement already satisfied: python-dateutil>=2.7 in
+/usr/local/lib/python3.9/dist-packages (from matplotlib!=3.6.1,>=3.1->seaborn)
+(2.8.2)
+Requirement already satisfied: pyparsing>=2.3.1 in
+/usr/local/lib/python3.9/dist-packages (from matplotlib!=3.6.1,>=3.1->seaborn)
+(3.0.9)
+Requirement already satisfied: contourpy>=1.0.1 in
+/usr/local/lib/python3.9/dist-packages (from matplotlib!=3.6.1,>=3.1->seaborn)
+(1.0.7)
+Requirement already satisfied: cycler>=0.10 in /usr/local/lib/python3.9/dist-
+packages (from matplotlib!=3.6.1,>=3.1->seaborn) (0.11.0)
+Requirement already satisfied: importlib-resources>=3.2.0 in
+/usr/local/lib/python3.9/dist-packages (from matplotlib!=3.6.1,>=3.1->seaborn)
+(5.12.0)
+Requirement already satisfied: pytz>=2020.1 in /usr/local/lib/python3.9/dist-
+packages (from pandas>=0.25->seaborn) (2022.7.1)
+Requirement already satisfied: greenlet!=0.4.17 in
+/usr/local/lib/python3.9/dist-packages (from sqlalchemy>=1.3.0->optuna) (2.0.2)
+Requirement already satisfied: zipp>=3.1.0 in /usr/local/lib/python3.9/dist-
+packages (from importlib-resources>=3.2.0->matplotlib!=3.6.1,>=3.1->seaborn)
+(3.15.0)
+Requirement already satisfied: six>=1.5 in /usr/local/lib/python3.9/dist-
+packages (from python-dateutil>=2.7->matplotlib!=3.6.1,>=3.1->seaborn) (1.16.0)
+Requirement already satisfied: MarkupSafe>=0.9.2 in
+/usr/local/lib/python3.9/dist-packages (from Mako->alembic>=1.5.0->optuna)
+(2.1.2)
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Import dependencies, check versions}
+\PY{k+kn}{import} \PY{n+nn}{torch\PYZus{}geometric}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\PY{k+kn}{import} \PY{n+nn}{torch}
+\PY{k+kn}{import} \PY{n+nn}{os}
+\PY{k+kn}{import} \PY{n+nn}{networkx} \PY{k}{as} \PY{n+nn}{nx}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{from} \PY{n+nn}{typing} \PY{k+kn}{import} \PY{n}{Dict}\PY{p}{,} \PY{n}{List}\PY{p}{,} \PY{n}{Tuple}\PY{p}{,} \PY{n}{Union}\PY{p}{,} \PY{n}{Optional}
+\PY{k+kn}{import} \PY{n+nn}{seaborn} \PY{k}{as} \PY{n+nn}{sns}
+\PY{k+kn}{from} \PY{n+nn}{torch\PYZus{}geometric}\PY{n+nn}{.}\PY{n+nn}{data} \PY{k+kn}{import} \PY{n}{Data}
+\PY{k+kn}{from} \PY{n+nn}{torch\PYZus{}geometric}\PY{n+nn}{.}\PY{n+nn}{loader} \PY{k+kn}{import} \PY{n}{DataLoader}
+\PY{n}{sns}\PY{o}{.}\PY{n}{set\PYZus{}theme}\PY{p}{(}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{torch}\PY{o}{.}\PY{n}{\PYZus{}\PYZus{}version\PYZus{}\PYZus{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{torch\PYZus{}geometric}\PY{o}{.}\PY{n}{\PYZus{}\PYZus{}version\PYZus{}\PYZus{}}\PY{p}{)}
+\PY{n}{device} \PY{o}{=} \PY{n}{torch}\PY{o}{.}\PY{n}{device}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cuda}\PY{l+s+s1}{\PYZsq{}} \PY{k}{if} \PY{n}{torch}\PY{o}{.}\PY{n}{cuda}\PY{o}{.}\PY{n}{is\PYZus{}available}\PY{p}{(}\PY{p}{)} \PY{k}{else} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cpu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Running on}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{device}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+1.13.1
+2.2.0
+Running on cuda
+    \end{Verbatim}
+
+    \hypertarget{dataset}{%
+\section{Dataset}\label{dataset}}
+
+We used elliptic dataset from
+\href{https://www.kaggle.com/datasets/ellipticco/elliptic-data-set?resource=download}{Kaggle}.
+
+\begin{quote}
+The Elliptic Data Set maps Bitcoin transactions to real entities
+belonging to licit categories (exchanges, wallet providers, miners,
+licit services, etc.) versus illicit ones (scams, malware, terrorist
+organizations, ransomware, Ponzi schemes, etc.). The task on the dataset
+is to classify the illicit and licit nodes in the graph.
+\end{quote}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Dataset loading}
+
+\PY{c+c1}{\PYZsh{} Uncomment the following line for local execution}
+\PY{c+c1}{\PYZsh{} os.environ[\PYZsq{}DATASET\PYZus{}PATH\PYZsq{}] = r\PYZsq{}\PYZbs{}dataset\PYZbs{}elliptic\PYZus{}bitcoin\PYZus{}dataset\PYZsq{}}
+
+\PY{n}{is\PYZus{}running\PYZus{}from\PYZus{}local} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{DATASET\PYZus{}PATH}\PY{l+s+s1}{\PYZsq{}} \PY{o+ow}{in} \PY{n}{os}\PY{o}{.}\PY{n}{environ}
+\PY{k}{if} \PY{n}{is\PYZus{}running\PYZus{}from\PYZus{}local}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{DATA\PYZus{}PATH: }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{os}\PY{o}{.}\PY{n}{environ}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{DATASET\PYZus{}PATH}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+    \PY{n}{DATASET\PYZus{}PATH} \PY{o}{=} \PY{n}{os}\PY{o}{.}\PY{n}{environ}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{DATASET\PYZus{}PATH}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{k}{else}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Reading from Google Drive...}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{k+kn}{from} \PY{n+nn}{google}\PY{n+nn}{.}\PY{n+nn}{colab} \PY{k+kn}{import} \PY{n}{drive}
+    \PY{n}{drive}\PY{o}{.}\PY{n}{mount}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{/content/drive}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}  \PY{c+c1}{\PYZsh{} Check: !ls drive/MyDrive/}
+    \PY{n}{DATASET\PYZus{}PATH} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{drive/MyDrive/elliptic\PYZus{}bitcoin\PYZus{}dataset/}\PY{l+s+s1}{\PYZsq{}}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{DATA\PYZus{}PATH: }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{DATASET\PYZus{}PATH}\PY{p}{)}
+
+\PY{n}{classes} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}
+    \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{DATASET\PYZus{}PATH}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{/elliptic\PYZus{}txs\PYZus{}classes.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{index\PYZus{}col}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{txId}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{edgelist} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}
+    \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{DATASET\PYZus{}PATH}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{/elliptic\PYZus{}txs\PYZus{}edgelist.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} index on the top level timestamp, second level txId}
+\PY{n}{features} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}
+    \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{DATASET\PYZus{}PATH}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{/elliptic\PYZus{}txs\PYZus{}features.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{header}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{index\PYZus{}col}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+\PY{n}{features}\PY{o}{.}\PY{n}{index}\PY{o}{.}\PY{n}{names} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{timestamp}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{txId}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{c+c1}{\PYZsh{} That way, features are sorted by timestamp, as sample of first 5 columns shows:}
+\PY{n}{display}\PY{p}{(}\PY{n}{features}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{p}{:}\PY{l+m+mi}{5}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Reading from Google Drive{\ldots}
+Mounted at /content/drive
+DATA\_PATH:  drive/MyDrive/elliptic\_bitcoin\_dataset/
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+                            2         3         4          5
+timestamp txId                                              
+1         230425980 -0.171469 -0.184668 -1.201369  -0.121970
+          5530458   -0.171484 -0.184668 -1.201369  -0.121970
+          232022460 -0.172107 -0.184668 -1.201369  -0.121970
+          232438397  0.163054  1.963790 -0.646376  12.409294
+          230460314  1.011523 -0.081127 -1.201369   1.153668
+{\ldots}                       {\ldots}       {\ldots}       {\ldots}        {\ldots}
+49        173077460 -0.145771 -0.163752  0.463609  -0.121970
+          158577750 -0.165920 -0.123607  1.018602  -0.121970
+          158375402 -0.172014 -0.078182  1.018602   0.028105
+          158654197 -0.172842 -0.176622  1.018602  -0.121970
+          157597225 -0.012037 -0.132276  0.463609  -0.121970
+
+[203769 rows x 4 columns]
+    \end{Verbatim}
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Defining target classes}
+
+\PY{c+c1}{\PYZsh{} We want to have directed graphs}
+\PY{n}{directed\PYZus{}graph} \PY{o}{=} \PY{n}{nx}\PY{o}{.}\PY{n}{from\PYZus{}pandas\PYZus{}edgelist}\PY{p}{(}
+    \PY{n}{edgelist}\PY{p}{,} \PY{n}{source}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{txId1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{target}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{txId2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{create\PYZus{}using}\PY{o}{=}\PY{n}{nx}\PY{o}{.}\PY{n}{DiGraph}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+
+
+\PY{n}{ID\PYZus{}ILLICIT} \PY{o}{=} \PY{l+m+mi}{0}  \PY{c+c1}{\PYZsh{} Fraud}
+\PY{n}{ID\PYZus{}LICIT} \PY{o}{=} \PY{l+m+mi}{1}  \PY{c+c1}{\PYZsh{} Legitimate}
+\PY{n}{ID\PYZus{}UNLABELED} \PY{o}{=} \PY{l+m+mi}{2} \PY{c+c1}{\PYZsh{} Unknown}
+
+\PY{c+c1}{\PYZsh{} We have to construct mappings from node ids to features and classes}
+\PY{c+c1}{\PYZsh{} Then, we can use them to set node attributes in the subgraphs}
+
+\PY{n}{classes}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{classes}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{class}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{replace}\PY{p}{(}
+    \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{unknown}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{ID\PYZus{}UNLABELED}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{ID\PYZus{}ILLICIT}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{ID\PYZus{}LICIT}\PY{p}{\PYZcb{}}\PY{p}{)}
+\PY{n}{class\PYZus{}mapping} \PY{o}{=} \PY{n}{classes}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{to\PYZus{}dict}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{dict}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{n}{keys} \PY{o}{=} \PY{n}{features}\PY{o}{.}\PY{n}{index}\PY{o}{.}\PY{n}{get\PYZus{}level\PYZus{}values}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{rows} \PY{o}{=} \PY{n}{torch}\PY{o}{.}\PY{n}{tensor}\PY{p}{(}\PY{n}{features}\PY{o}{.}\PY{n}{values}\PY{p}{,} \PY{n}{dtype}\PY{o}{=}\PY{n}{torch}\PY{o}{.}\PY{n}{double}\PY{p}{)}
+\PY{n}{feature\PYZus{}mapping} \PY{o}{=} \PY{n+nb}{dict}\PY{p}{(}\PY{n+nb}{zip}\PY{p}{(}\PY{n}{keys}\PY{p}{,} \PY{n}{rows}\PY{p}{)}\PY{p}{)}
+
+
+\PY{n}{timestamps} \PY{o}{=} \PY{n}{features}\PY{o}{.}\PY{n}{index}\PY{o}{.}\PY{n}{get\PYZus{}level\PYZus{}values}\PY{p}{(}
+    \PY{l+m+mi}{0}\PY{p}{)}\PY{o}{.}\PY{n}{unique}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}
+\PY{n}{ts\PYZus{}TxID\PYZus{}df} \PY{o}{=} \PY{n}{features}\PY{o}{.}\PY{n}{index}\PY{o}{.}\PY{n}{to\PYZus{}frame}\PY{p}{(}\PY{n}{index}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} We want to }
+\PY{n}{dataset}\PY{p}{:} \PY{n}{List}\PY{p}{[}\PY{n}{nx}\PY{o}{.}\PY{n}{DiGraph}\PY{p}{]} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{k}{for} \PY{n}{ts} \PY{o+ow}{in} \PY{n}{timestamps}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{} Get all txIds for a given timestamp}
+    \PY{n}{sub\PYZus{}graph\PYZus{}idx} \PY{o}{=} \PY{n}{ts\PYZus{}TxID\PYZus{}df}\PY{p}{[}\PY{n}{ts\PYZus{}TxID\PYZus{}df}\PY{o}{.}\PY{n}{timestamp} \PY{o}{==} \PY{n}{ts}\PY{p}{]}\PY{o}{.}\PY{n}{txId}\PY{o}{.}\PY{n}{to\PYZus{}list}\PY{p}{(}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{} Create subgraph from the original graph}
+    \PY{n}{s} \PY{o}{=} \PY{n}{directed\PYZus{}graph}\PY{o}{.}\PY{n}{subgraph}\PY{p}{(}\PY{n}{sub\PYZus{}graph\PYZus{}idx}\PY{p}{)}
+    \PY{n}{nx}\PY{o}{.}\PY{n}{set\PYZus{}node\PYZus{}attributes}\PY{p}{(}\PY{n}{s}\PY{p}{,} \PY{n}{class\PYZus{}mapping}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{y}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{nx}\PY{o}{.}\PY{n}{set\PYZus{}node\PYZus{}attributes}\PY{p}{(}\PY{n}{s}\PY{p}{,} \PY{n}{feature\PYZus{}mapping}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{x}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+    \PY{n}{dataset}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{s}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Takes \PYZti{}40sec to run}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{statistical-overview-of-the-data}{%
+\subsection{Statistical overview of the
+data}\label{statistical-overview-of-the-data}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Statistical data of the dataset}
+
+\PY{n}{subgraph\PYZus{}nodes} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{n+nb}{len}\PY{p}{(}\PY{n}{subgraph}\PY{o}{.}\PY{n}{nodes}\PY{p}{)} \PY{k}{for} \PY{n}{subgraph} \PY{o+ow}{in} \PY{n}{dataset}\PY{p}{]}\PY{p}{)}
+\PY{n}{subgraph\PYZus{}edges} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{n+nb}{len}\PY{p}{(}\PY{n}{subgraph}\PY{o}{.}\PY{n}{edges}\PY{p}{)} \PY{k}{for} \PY{n}{subgraph} \PY{o+ow}{in} \PY{n}{dataset}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{subgraph\PYZus{}idx} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{dataset}\PY{p}{)}\PY{p}{)}
+\PY{n}{x\PYZus{}ticks} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n+nb}{len}\PY{p}{(}\PY{n}{dataset}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{18}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{221}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Number of nodes per subgraph}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{barplot}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{n}{subgraph\PYZus{}idx}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{n}{subgraph\PYZus{}nodes}\PY{p}{,} \PY{n}{palette}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ch:.25}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xticks}\PY{p}{(}\PY{n}{x\PYZus{}ticks}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{222}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Number of edges per subgraph}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{barplot}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{n}{subgraph\PYZus{}idx}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{n}{subgraph\PYZus{}edges}\PY{p}{,} \PY{n}{palette}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ch:.25}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xticks}\PY{p}{(}\PY{n}{x\PYZus{}ticks}\PY{p}{)}
+
+\PY{n}{avg\PYZus{}cluster\PYZus{}coef} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{n}{nx}\PY{o}{.}\PY{n}{average\PYZus{}clustering}\PY{p}{(}\PY{n}{subgraph}\PY{p}{)}
+                            \PY{k}{for} \PY{n}{subgraph} \PY{o+ow}{in} \PY{n}{dataset}\PY{p}{]}\PY{p}{)}
+
+
+\PY{k}{def} \PY{n+nf}{graph\PYZus{}bincount}\PY{p}{(}\PY{n}{G}\PY{p}{)}\PY{p}{:}
+    \PY{n}{bc} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{bincount}\PY{p}{(}\PY{p}{[}\PY{n}{attrs}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{y}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{k}{for} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{attrs} \PY{o+ow}{in} \PY{n}{G}\PY{o}{.}\PY{n}{nodes}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{p}{]}\PY{p}{)}
+    \PY{k}{return} \PY{n}{bc} \PY{o}{/} \PY{n}{bc}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}
+
+
+\PY{n}{no\PYZus{}of\PYZus{}classes} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{n}{graph\PYZus{}bincount}\PY{p}{(}\PY{n}{subgraph}\PY{p}{)} \PY{k}{for} \PY{n}{subgraph} \PY{o+ow}{in} \PY{n}{dataset}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{avg\PYZus{}node\PYZus{}class} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{no\PYZus{}of\PYZus{}classes}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{illicit\PYZus{}percentage} \PY{o}{=} \PY{p}{[}\PY{n}{x\PYZus{}ill} \PY{o}{/} \PY{p}{(}\PY{n}{x\PYZus{}ill} \PY{o}{+} \PY{n}{x\PYZus{}lic}\PY{p}{)}
+                      \PY{k}{for} \PY{n}{x\PYZus{}ill}\PY{p}{,} \PY{n}{x\PYZus{}lic}\PY{p}{,} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n}{no\PYZus{}of\PYZus{}classes}\PY{p}{]}
+
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{234}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Average clustering coefficient per subgraph}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{barplot}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{n}{subgraph\PYZus{}idx}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{n}{avg\PYZus{}cluster\PYZus{}coef}\PY{p}{,} \PY{n}{palette}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ch:.25}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xticks}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n+nb}{len}\PY{p}{(}\PY{n}{dataset}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{235}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Average percent of class per subgraph}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{barplot}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{illicit}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{licit}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{unknown}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+            \PY{n}{y}\PY{o}{=}\PY{n}{avg\PYZus{}node\PYZus{}class}\PY{p}{,} \PY{n}{palette}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ch:.25}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{236}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Percent of illicit nodes vs. all labeled nodes for each subgraph}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{barplot}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{n}{subgraph\PYZus{}idx}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{n}{illicit\PYZus{}percentage}\PY{p}{,} \PY{n}{palette}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ch:.25}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xticks}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n+nb}{len}\PY{p}{(}\PY{n}{dataset}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{suptitle}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Dataset statistics}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{16}\PY{p}{)}
+
+\PY{k}{pass}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{project_files/project_7_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Displaying the smallest subgraph}
+\PY{n}{min\PYZus{}idx} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{argmin}\PY{p}{(}\PY{n}{subgraph\PYZus{}nodes}\PY{p}{)}
+\PY{n}{smallest\PYZus{}subgraph} \PY{o}{=} \PY{n}{dataset}\PY{p}{[}\PY{n}{min\PYZus{}idx}\PY{p}{]}
+\PY{n}{labeled\PYZus{}nodes} \PY{o}{=} \PY{p}{[}\PY{n}{x} \PY{k}{for} \PY{n}{x}\PY{p}{,} \PY{n}{y} \PY{o+ow}{in} \PY{n}{smallest\PYZus{}subgraph}\PY{o}{.}\PY{n}{nodes}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)} \PY{k}{if} \PY{n}{y}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{!=}\PY{n}{ID\PYZus{}UNLABELED}\PY{p}{]}
+\PY{n}{labeled\PYZus{}graph} \PY{o}{=} \PY{n}{nx}\PY{o}{.}\PY{n}{induced\PYZus{}subgraph}\PY{p}{(}\PY{n}{smallest\PYZus{}subgraph}\PY{p}{,} \PY{n}{labeled\PYZus{}nodes}\PY{p}{)}
+
+\PY{n}{palette} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{color\PYZus{}palette}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{husl}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}
+\PY{n}{color\PYZus{}map} \PY{o}{=} \PY{p}{\PYZob{}}\PY{n}{ID\PYZus{}UNLABELED}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{gray}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{ID\PYZus{}LICIT}\PY{p}{:} \PY{n}{palette}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{ID\PYZus{}ILLICIT}\PY{p}{:} \PY{n}{palette}\PY{p}{[}\PY{l+m+mi}{5}\PY{p}{]}\PY{p}{\PYZcb{}}
+\PY{n}{colors\PYZus{}labled} \PY{o}{=} \PY{p}{[}\PY{n}{color\PYZus{}map}\PY{p}{[}\PY{n}{attrs}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{y}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{]} \PY{k}{for} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{attrs} \PY{o+ow}{in} \PY{n}{labeled\PYZus{}graph}\PY{o}{.}\PY{n}{nodes}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{p}{]}
+\PY{n}{colors\PYZus{}full} \PY{o}{=} \PY{p}{[}\PY{n}{color\PYZus{}map}\PY{p}{[}\PY{n}{attrs}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{y}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{]} \PY{k}{for} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{attrs} \PY{o+ow}{in} \PY{n}{smallest\PYZus{}subgraph}\PY{o}{.}\PY{n}{nodes}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{p}{]}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)} 
+\PY{n}{nx}\PY{o}{.}\PY{n}{draw\PYZus{}random}\PY{p}{(}\PY{n}{labeled\PYZus{}graph}\PY{p}{,} \PY{n}{node\PYZus{}color}\PY{o}{=}\PY{n}{colors\PYZus{}labled}\PY{p}{,} \PY{n}{node\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{250}\PY{p}{,} \PY{n}{linewidths}\PY{o}{=}\PY{l+m+mi}{5}\PY{p}{,} \PY{n}{edge\PYZus{}color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{black}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.5}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{suptitle}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Label\PYZhy{}only induced subgraph of graph no. }\PY{l+s+si}{\PYZob{}}\PY{n}{min\PYZus{}idx}\PY{o}{+}\PY{l+m+mi}{1}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+\PY{n}{pos} \PY{o}{=} \PY{n}{nx}\PY{o}{.}\PY{n}{spring\PYZus{}layout}\PY{p}{(}\PY{n}{smallest\PYZus{}subgraph}\PY{p}{,} \PY{n}{center}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{dim}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{seed}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{nx}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{n}{smallest\PYZus{}subgraph}\PY{p}{,} \PY{n}{pos}\PY{o}{=}\PY{n}{pos}\PY{p}{,} \PY{n}{node\PYZus{}color}\PY{o}{=}\PY{n}{colors\PYZus{}full}\PY{p}{,} \PY{n}{node\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{30}\PY{p}{,} \PY{n}{linewidths}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{edge\PYZus{}color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{black}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.5}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{suptitle}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Graph no. }\PY{l+s+si}{\PYZob{}}\PY{n}{min\PYZus{}idx}\PY{o}{+}\PY{l+m+mi}{1}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ with all nodes}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{k}{pass}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/usr/local/lib/python3.9/dist-packages/matplotlib/cbook/\_\_init\_\_.py:1062:
+VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences
+(which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths
+or shapes) is deprecated. If you meant to do this, you must specify
+'dtype=object' when creating the ndarray.
+  x = np.asanyarray(x)
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{project_files/project_8_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{project_files/project_8_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{model-definition}{%
+\section{Model Definition}\label{model-definition}}
+
+The Model is defined in the following cell. It is highly modular, as it
+can work with two different types of convolutional layers:
+\texttt{GCNConv} and \texttt{GATConv}. It also supports different hidden
+channel sizes, different numbers of hidden layers, different dropout and
+nonlinearity function.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Model definition}
+\PY{k+kn}{from} \PY{n+nn}{torch\PYZus{}geometric}\PY{n+nn}{.}\PY{n+nn}{nn} \PY{k+kn}{import} \PY{n}{GCNConv}\PY{p}{,} \PY{n}{GATConv}\PY{p}{,} \PY{n}{BatchNorm}
+\PY{k+kn}{import} \PY{n+nn}{torch}\PY{n+nn}{.}\PY{n+nn}{nn} \PY{k}{as} \PY{n+nn}{nn}
+\PY{k+kn}{import} \PY{n+nn}{torch}\PY{n+nn}{.}\PY{n+nn}{nn}\PY{n+nn}{.}\PY{n+nn}{functional} \PY{k}{as} \PY{n+nn}{F}
+
+
+\PY{k}{class} \PY{n+nc}{SM2GNN}\PY{p}{(}\PY{n}{torch}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{Module}\PY{p}{)}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf+fm}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,}
+                 \PY{n}{in\PYZus{}channels}\PY{p}{:} \PY{n+nb}{int}\PY{p}{,}
+                 \PY{n}{hidden\PYZus{}channels}\PY{p}{:} \PY{n+nb}{int}\PY{p}{,}
+                 \PY{n}{out\PYZus{}channels}\PY{p}{:} \PY{n+nb}{int}\PY{p}{,}
+                 \PY{n}{conv\PYZus{}model}\PY{p}{:} \PY{n+nb}{type}\PY{p}{[}\PY{n}{nn}\PY{o}{.}\PY{n}{Module}\PY{p}{]}\PY{p}{,}
+                 \PY{n}{nonlinearity}\PY{p}{:} \PY{n}{nn}\PY{o}{.}\PY{n}{Module}\PY{p}{,}
+                 \PY{n}{num\PYZus{}hidden}\PY{p}{:} \PY{n+nb}{int} \PY{o}{=} \PY{l+m+mi}{3}\PY{p}{,}
+                 \PY{n}{conv\PYZus{}args}\PY{p}{:} \PY{n}{Dict} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}\PY{p}{,}
+                 \PY{n}{dropout}\PY{p}{:} \PY{n+nb}{float} \PY{o}{=} \PY{l+m+mf}{0.5}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb}{super}\PY{p}{(}\PY{n}{SM2GNN}\PY{p}{,} \PY{n+nb+bp}{self}\PY{p}{)}\PY{o}{.}\PY{n+nf+fm}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{p}{)}
+
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{convs} \PY{o}{=} \PY{n}{nn}\PY{o}{.}\PY{n}{ModuleList}\PY{p}{(}\PY{p}{)}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{bns} \PY{o}{=} \PY{n}{nn}\PY{o}{.}\PY{n}{ModuleList}\PY{p}{(}\PY{p}{)}
+
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{convs}\PY{o}{.}\PY{n}{append}\PY{p}{(}
+            \PY{n}{conv\PYZus{}model}\PY{p}{(}\PY{n}{in\PYZus{}channels}\PY{p}{,} \PY{n}{hidden\PYZus{}channels}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{conv\PYZus{}args}\PY{p}{)}
+        \PY{p}{)}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{bns}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{BatchNorm}\PY{p}{(}\PY{n}{hidden\PYZus{}channels}\PY{p}{)}\PY{p}{)}
+        \PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{num\PYZus{}hidden}\PY{p}{)}\PY{p}{:}
+            \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{convs}\PY{o}{.}\PY{n}{append}\PY{p}{(}
+                \PY{n}{conv\PYZus{}model}\PY{p}{(}\PY{n}{hidden\PYZus{}channels}\PY{p}{,} \PY{n}{hidden\PYZus{}channels}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{conv\PYZus{}args}\PY{p}{)}\PY{p}{)}
+            \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{bns}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{BatchNorm}\PY{p}{(}\PY{n}{hidden\PYZus{}channels}\PY{p}{)}\PY{p}{)}
+
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{convs}\PY{o}{.}\PY{n}{append}\PY{p}{(}
+            \PY{n}{conv\PYZus{}model}\PY{p}{(}\PY{n}{hidden\PYZus{}channels}\PY{p}{,} \PY{n}{out\PYZus{}channels}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{conv\PYZus{}args}\PY{p}{)}\PY{p}{)}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{bns}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{BatchNorm}\PY{p}{(}\PY{n}{hidden\PYZus{}channels}\PY{p}{)}\PY{p}{)}
+
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{dropout} \PY{o}{=} \PY{n}{dropout}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{nonlinearity} \PY{o}{=} \PY{n}{nonlinearity}
+
+    \PY{k}{def} \PY{n+nf}{reset\PYZus{}parameters}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+        \PY{k}{for} \PY{n}{conv} \PY{o+ow}{in} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{convs}\PY{p}{:}
+            \PY{n}{conv}\PY{o}{.}\PY{n}{reset\PYZus{}parameters}\PY{p}{(}\PY{p}{)}
+        \PY{k}{for} \PY{n}{bn} \PY{o+ow}{in} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{bns}\PY{p}{:}
+            \PY{n}{bn}\PY{o}{.}\PY{n}{reset\PYZus{}parameters}\PY{p}{(}\PY{p}{)}
+
+    \PY{k}{def} \PY{n+nf}{forward}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{edge\PYZus{}index}\PY{p}{,} \PY{n}{return\PYZus{}embeddings}\PY{p}{:} \PY{n+nb}{bool} \PY{o}{=} \PY{k+kc}{False}\PY{p}{)}\PY{p}{:}
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{convs}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+            \PY{n}{conv} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{convs}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+            \PY{n}{x} \PY{o}{=} \PY{n}{conv}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{edge\PYZus{}index}\PY{p}{)}
+            \PY{n}{x} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{nonlinearity}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+            \PY{n}{x} \PY{o}{=} \PY{n}{F}\PY{o}{.}\PY{n}{dropout}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{p}\PY{o}{=}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{dropout}\PY{p}{,} \PY{n}{training}\PY{o}{=}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{training}\PY{p}{)}
+            \PY{n}{x} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{bns}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+        \PY{k}{if} \PY{o+ow}{not} \PY{n}{return\PYZus{}embeddings}\PY{p}{:}
+            \PY{n}{x} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{convs}\PY{p}{[}\PY{n+nb}{len}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{convs}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{edge\PYZus{}index}\PY{p}{)}
+            \PY{n}{x} \PY{o}{=} \PY{n}{F}\PY{o}{.}\PY{n}{softmax}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{dim}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+        \PY{k}{return} \PY{n}{x}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{model-configuration}{%
+\subsection{Model Configuration}\label{model-configuration}}
+
+Because we want to fine-tune hyper parameters of the model, we define
+\texttt{ModelConfig}, that will be json serializable, and will be used
+to create \texttt{SM2GNN} instance. Similarly, there are some other
+configuration options for training: - How many epochs we want to train
+for? - What will be our batch size? - What optimizer we want to use?
+Which parameters should we use for it? - What loss function we want to
+use?
+
+We used \texttt{dataclasses} library, that allows us to define classes
+with default values, and then easily convert them to json.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Model Config}
+\PY{k+kn}{from} \PY{n+nn}{dataclasses} \PY{k+kn}{import} \PY{n}{dataclass}\PY{p}{,} \PY{n}{asdict}\PY{p}{,} \PY{n}{field}
+
+\PY{k+kn}{import} \PY{n+nn}{json}
+\PY{k+kn}{import} \PY{n+nn}{re}
+
+
+\PY{k}{class} \PY{n+nc}{SerializableConfig}\PY{p}{:}
+
+    \PY{n+nd}{@classmethod}
+    \PY{k}{def} \PY{n+nf}{load}\PY{p}{(}\PY{n+nb+bp}{cls}\PY{p}{,} \PY{n}{fname}\PY{p}{:} \PY{n+nb}{str}\PY{p}{)}\PY{p}{:}
+        \PY{k}{with} \PY{n+nb}{open}\PY{p}{(}\PY{n}{fname}\PY{p}{)} \PY{k}{as} \PY{n}{f}\PY{p}{:}
+            \PY{k}{return} \PY{n+nb+bp}{cls}\PY{p}{(}\PY{o}{*}\PY{o}{*}\PY{n}{json}\PY{o}{.}\PY{n}{load}\PY{p}{(}\PY{n}{f}\PY{p}{)}\PY{p}{)}
+
+    \PY{k}{def} \PY{n+nf}{save}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{fname}\PY{p}{:} \PY{n+nb}{str}\PY{p}{)}\PY{p}{:}
+        \PY{k}{with} \PY{n+nb}{open}\PY{p}{(}\PY{n}{fname}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{w}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} \PY{k}{as} \PY{n}{f}\PY{p}{:}
+            \PY{n}{json}\PY{o}{.}\PY{n}{dump}\PY{p}{(}\PY{n}{asdict}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{,} \PY{n}{f}\PY{p}{,} \PY{n}{indent}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{)}
+        \PY{k}{return} \PY{n+nb+bp}{self}
+
+    \PY{n+nd}{@classmethod}
+    \PY{k}{def} \PY{n+nf}{from\PYZus{}dict}\PY{p}{(}\PY{n+nb+bp}{cls}\PY{p}{,} \PY{n}{d}\PY{p}{:} \PY{n+nb}{dict}\PY{p}{)}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{} only take the keys that are in the dataclass}
+        \PY{n}{d} \PY{o}{=} \PY{p}{\PYZob{}}\PY{n}{k}\PY{p}{:} \PY{n}{v} \PY{k}{for} \PY{n}{k}\PY{p}{,} \PY{n}{v} \PY{o+ow}{in} \PY{n}{d}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)} \PY{k}{if} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb+bp}{cls}\PY{o}{.}\PY{n}{\PYZus{}\PYZus{}dataclass\PYZus{}fields\PYZus{}\PYZus{}}\PY{p}{\PYZcb{}}
+        \PY{k}{return} \PY{n+nb+bp}{cls}\PY{p}{(}\PY{o}{*}\PY{o}{*}\PY{n}{d}\PY{p}{)}
+
+    \PY{k}{def} \PY{n+nf}{update\PYZus{}keys}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{kwargs}\PY{p}{:} \PY{n+nb}{dict}\PY{p}{)}\PY{p}{:}
+        \PY{n}{d} \PY{o}{=} \PY{p}{\PYZob{}}\PY{n}{k}\PY{p}{:} \PY{n}{v} \PY{k}{for} \PY{n}{k}\PY{p}{,} \PY{n}{v} \PY{o+ow}{in} \PY{n}{kwargs}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)} \PY{k}{if} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{\PYZus{}\PYZus{}dataclass\PYZus{}fields\PYZus{}\PYZus{}}\PY{p}{\PYZcb{}}
+        \PY{k}{for} \PY{n}{k}\PY{p}{,} \PY{n}{v} \PY{o+ow}{in} \PY{n}{d}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+            \PY{n+nb}{setattr}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{k}\PY{p}{,} \PY{n}{v}\PY{p}{)}
+        \PY{k}{return} \PY{n+nb+bp}{self}
+
+
+\PY{n+nd}{@dataclass}
+\PY{k}{class} \PY{n+nc}{ModelConfig}\PY{p}{(}\PY{n}{SerializableConfig}\PY{p}{)}\PY{p}{:}
+    \PY{n}{in\PYZus{}channels}\PY{p}{:} \PY{n+nb}{int} \PY{o}{=} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+    \PY{n}{hidden\PYZus{}channels}\PY{p}{:} \PY{n+nb}{int} \PY{o}{=} \PY{l+m+mi}{64}
+    \PY{n}{out\PYZus{}channels}\PY{p}{:} \PY{n+nb}{int} \PY{o}{=} \PY{l+m+mi}{2}
+    \PY{n}{num\PYZus{}hidden}\PY{p}{:} \PY{n+nb}{int} \PY{o}{=} \PY{l+m+mi}{3}
+    \PY{n}{conv\PYZus{}model}\PY{p}{:} \PY{n+nb}{str} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{GATConv(4)}\PY{l+s+s2}{\PYZdq{}}
+    \PY{n}{conv\PYZus{}args}\PY{p}{:} \PY{n+nb}{dict} \PY{o}{=} \PY{n}{field}\PY{p}{(}\PY{n}{default\PYZus{}factory}\PY{o}{=}\PY{n+nb}{dict}\PY{p}{)}
+    \PY{n}{dropout}\PY{p}{:} \PY{n+nb}{float} \PY{o}{=} \PY{l+m+mf}{0.5}
+    \PY{n}{nonlinearity}\PY{p}{:} \PY{n+nb}{str} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{leaky\PYZus{}relu(0.2)}\PY{l+s+s1}{\PYZsq{}}
+
+    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}nonlinearity}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+        \PY{k}{if} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{nonlinearity} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{relu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+            \PY{k}{return} \PY{n}{nn}\PY{o}{.}\PY{n}{ReLU}\PY{p}{(}\PY{p}{)}
+        \PY{n}{leakyrelu\PYZus{}re} \PY{o}{=} \PY{n}{re}\PY{o}{.}\PY{n}{match}\PY{p}{(}
+            \PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{leaky\PYZus{}relu}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{((}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{d+}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{.?}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{d*)}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{nonlinearity}\PY{p}{)}
+        \PY{k}{if} \PY{n}{leakyrelu\PYZus{}re}\PY{p}{:}
+            \PY{k}{return} \PY{n}{nn}\PY{o}{.}\PY{n}{LeakyReLU}\PY{p}{(}\PY{n+nb}{float}\PY{p}{(}\PY{n}{leakyrelu\PYZus{}re}\PY{o}{.}\PY{n}{group}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+        \PY{k}{if} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{nonlinearity} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sigmoid}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+            \PY{k}{return} \PY{n}{nn}\PY{o}{.}\PY{n}{Sigmoid}\PY{p}{(}\PY{p}{)}
+        \PY{k}{else}\PY{p}{:}
+            \PY{k}{raise} \PY{n+ne}{ValueError}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Unknown nonlinearity: }\PY{l+s+si}{\PYZob{}}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{nonlinearity}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+    \PY{k}{def} \PY{n+nf}{\PYZus{}\PYZus{}model\PYZus{}type}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+        \PY{n}{gatconv\PYZus{}re} \PY{o}{=} \PY{n}{re}\PY{o}{.}\PY{n}{match}\PY{p}{(}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{GATConv}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{((}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{d+)}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{conv\PYZus{}model}\PY{p}{)}
+        \PY{k}{if} \PY{n}{gatconv\PYZus{}re}\PY{p}{:}
+            \PY{n}{heads} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{gatconv\PYZus{}re}\PY{o}{.}\PY{n}{group}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+            \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{conv\PYZus{}args}\PY{o}{.}\PY{n}{update}\PY{p}{(}\PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{concat}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{k+kc}{False}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{heads}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{n}{heads}\PY{p}{\PYZcb{}}\PY{p}{)}
+            \PY{k}{return} \PY{n}{GATConv}
+        \PY{k}{elif} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{conv\PYZus{}model} \PY{o}{==} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{GCNConv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:}
+            \PY{k}{return} \PY{n}{GCNConv}
+        \PY{k}{else}\PY{p}{:}
+            \PY{k}{raise} \PY{n+ne}{ValueError}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Unknown model type: }\PY{l+s+si}{\PYZob{}}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{conv\PYZus{}model}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+    \PY{k}{def} \PY{n+nf}{create}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{n}{SM2GNN}\PY{p}{(}\PY{n}{in\PYZus{}channels}\PY{o}{=}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{in\PYZus{}channels}\PY{p}{,}
+                       \PY{n}{hidden\PYZus{}channels}\PY{o}{=}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{hidden\PYZus{}channels}\PY{p}{,}
+                       \PY{n}{out\PYZus{}channels}\PY{o}{=}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{out\PYZus{}channels}\PY{p}{,}
+                       \PY{n}{num\PYZus{}hidden}\PY{o}{=}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{num\PYZus{}hidden}\PY{p}{,}
+                       \PY{n}{conv\PYZus{}model}\PY{o}{=}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{\PYZus{}\PYZus{}model\PYZus{}type}\PY{p}{(}\PY{p}{)}\PY{p}{,}
+                       \PY{n}{conv\PYZus{}args}\PY{o}{=}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{conv\PYZus{}args}\PY{p}{,} \PY{n}{dropout}\PY{o}{=}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{dropout}\PY{p}{,}
+                       \PY{n}{nonlinearity}\PY{o}{=}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{\PYZus{}\PYZus{}nonlinearity}\PY{p}{(}\PY{p}{)}
+                       \PY{p}{)}\PY{o}{.}\PY{n}{to}\PY{p}{(}\PY{n}{device}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \texttt{TrainConfig} class defines the training configuration. It also
+contains a hyperparameter for class weight, which helps to reduce the
+impact of the imbalanced dataset.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Train Config}
+
+\PY{n+nd}{@dataclass}
+\PY{k}{class} \PY{n+nc}{TrainConfig}\PY{p}{(}\PY{n}{SerializableConfig}\PY{p}{)}\PY{p}{:}
+    \PY{n}{num\PYZus{}epoch}\PY{p}{:} \PY{n+nb}{int} \PY{o}{=} \PY{l+m+mi}{10}
+    \PY{n}{batch\PYZus{}size}\PY{p}{:} \PY{n+nb}{int} \PY{o}{=} \PY{l+m+mi}{32}
+    \PY{n}{test\PYZus{}split}\PY{p}{:} \PY{n+nb}{float} \PY{o}{=} \PY{l+m+mf}{0.2}
+    \PY{n}{random\PYZus{}state}\PY{p}{:} \PY{n}{Optional}\PY{p}{[}\PY{n+nb}{int}\PY{p}{]} \PY{o}{=} \PY{k+kc}{None}
+
+    \PY{c+c1}{\PYZsh{} Optimizer}
+    \PY{n}{optimizer\PYZus{}name}\PY{p}{:} \PY{n+nb}{str} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{adam}\PY{l+s+s1}{\PYZsq{}}
+    \PY{n}{lr}\PY{p}{:} \PY{n+nb}{float} \PY{o}{=} \PY{l+m+mf}{0.01}
+    \PY{n}{weight\PYZus{}decay}\PY{p}{:} \PY{n+nb}{float} \PY{o}{=} \PY{l+m+mf}{5e\PYZhy{}4}
+
+    \PY{k}{def} \PY{n+nf}{get\PYZus{}optimizer\PYZus{}for}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{model}\PY{p}{)}\PY{p}{:}
+        \PY{k}{if} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{optimizer\PYZus{}name} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{adam}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+            \PY{k}{return} \PY{n}{torch}\PY{o}{.}\PY{n}{optim}\PY{o}{.}\PY{n}{Adam}\PY{p}{(}\PY{n}{model}\PY{o}{.}\PY{n}{parameters}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{lr}\PY{o}{=}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{lr}\PY{p}{,} \PY{n}{weight\PYZus{}decay}\PY{o}{=}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{weight\PYZus{}decay}\PY{p}{)}
+        \PY{k}{elif} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{optimizer\PYZus{}name} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sgd}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+            \PY{k}{return} \PY{n}{torch}\PY{o}{.}\PY{n}{optim}\PY{o}{.}\PY{n}{SGD}\PY{p}{(}\PY{n}{model}\PY{o}{.}\PY{n}{parameters}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{lr}\PY{o}{=}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{lr}\PY{p}{,} \PY{n}{weight\PYZus{}decay}\PY{o}{=}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{weight\PYZus{}decay}\PY{p}{)}
+        \PY{k}{else}\PY{p}{:}
+            \PY{k}{raise} \PY{n+ne}{ValueError}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Unknown optimizer name: }\PY{l+s+si}{\PYZob{}}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{optimizer\PYZus{}name}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} Loss function}
+    \PY{n}{loss\PYZus{}name}\PY{p}{:} \PY{n+nb}{str} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cross\PYZus{}entropy}\PY{l+s+s1}{\PYZsq{}}
+
+    \PY{c+c1}{\PYZsh{} Beacuse of the class imbalance, we want to give more weight to the ID\PYZus{}LICIT class}
+    \PY{n}{class\PYZus{}weight}\PY{p}{:} \PY{n+nb}{float} \PY{o}{=} \PY{l+m+mf}{0.80}
+
+    \PY{k}{def} \PY{n+nf}{get\PYZus{}loss}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+        \PY{n}{class\PYZus{}weights} \PY{o}{=} \PY{n}{torch}\PY{o}{.}\PY{n}{tensor}\PY{p}{(}
+            \PY{p}{[}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{class\PYZus{}weight}\PY{p}{,} \PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{class\PYZus{}weight}\PY{p}{]}\PY{p}{,} \PY{n}{device}\PY{o}{=}\PY{n}{device}\PY{p}{)}
+        \PY{k}{if} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{loss\PYZus{}name} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cross\PYZus{}entropy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+            \PY{k}{return} \PY{n}{torch}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{CrossEntropyLoss}\PY{p}{(}\PY{n}{weight}\PY{o}{=}\PY{n}{class\PYZus{}weights}\PY{p}{)}
+        \PY{k}{if} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{loss\PYZus{}name} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bce}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+            \PY{k}{return} \PY{n}{torch}\PY{o}{.}\PY{n}{nn}\PY{o}{.}\PY{n}{BCEWithLogitsLoss}\PY{p}{(}\PY{n}{weight}\PY{o}{=}\PY{n}{class\PYZus{}weights}\PY{p}{)}
+        \PY{k}{else}\PY{p}{:}
+            \PY{k}{raise} \PY{n+ne}{ValueError}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Unknown loss name: }\PY{l+s+si}{\PYZob{}}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{loss\PYZus{}name}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{the-pipeline}{%
+\section{The Pipeline}\label{the-pipeline}}
+
+\hypertarget{data-splitting}{%
+\subsection{Data splitting}\label{data-splitting}}
+
+We have to transform our graphs from \texttt{networkx} to
+\texttt{torch\_geometric} format. We also have to split the data into
+train and test sets. We use \texttt{train\_test\_split} function from
+\texttt{sklearn} to do that.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Data loaders}
+\PY{k+kn}{from} \PY{n+nn}{torch\PYZus{}geometric}\PY{n+nn}{.}\PY{n+nn}{utils} \PY{k+kn}{import} \PY{n}{from\PYZus{}networkx}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{model\PYZus{}selection} \PY{k+kn}{import} \PY{n}{train\PYZus{}test\PYZus{}split}
+
+\PY{k}{def} \PY{n+nf}{split\PYZus{}and\PYZus{}create\PYZus{}loaders}\PY{p}{(}\PY{n}{config}\PY{p}{:} \PY{n}{TrainConfig}\PY{p}{,} \PY{n}{dataset}\PY{p}{:} \PY{n}{List}\PY{p}{[}\PY{n}{nx}\PY{o}{.}\PY{n}{Graph}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n}{Tuple}\PY{p}{[}\PY{n}{Tuple}\PY{p}{[}\PY{n}{List}\PY{p}{,} \PY{n}{List}\PY{p}{]}\PY{p}{,} \PY{n}{Tuple}\PY{p}{[}\PY{n}{DataLoader}\PY{p}{,} \PY{n}{DataLoader}\PY{p}{]}\PY{p}{]}\PY{p}{:}
+    \PY{n}{X\PYZus{}graphs} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+    \PY{k}{for} \PY{n}{subgraph} \PY{o+ow}{in} \PY{n}{dataset}\PY{p}{:}
+        \PY{n}{\PYZus{}x} \PY{o}{=} \PY{n}{from\PYZus{}networkx}\PY{p}{(}\PY{n}{subgraph}\PY{p}{)}
+        \PY{n}{X\PYZus{}graphs}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{\PYZus{}x}\PY{p}{)}
+    \PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{X\PYZus{}test} \PY{o}{=} \PY{n}{train\PYZus{}test\PYZus{}split}\PY{p}{(}
+        \PY{n}{X\PYZus{}graphs}\PY{p}{,} \PY{n}{test\PYZus{}size}\PY{o}{=}\PY{n}{config}\PY{o}{.}\PY{n}{test\PYZus{}split}\PY{p}{,} \PY{n}{random\PYZus{}state}\PY{o}{=}\PY{n}{config}\PY{o}{.}\PY{n}{random\PYZus{}state}\PY{p}{)}
+    \PY{n}{train\PYZus{}loader} \PY{o}{=} \PY{n}{DataLoader}\PY{p}{(}
+        \PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{n}{config}\PY{o}{.}\PY{n}{batch\PYZus{}size}\PY{p}{)}
+    \PY{n}{test\PYZus{}loader} \PY{o}{=} \PY{n}{DataLoader}\PY{p}{(}\PY{n}{X\PYZus{}test}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+    \PY{k}{return} \PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{X\PYZus{}test}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{n}{train\PYZus{}loader}\PY{p}{,} \PY{n}{test\PYZus{}loader}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{training}{%
+\subsection{Training}\label{training}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Train}
+\PY{k+kn}{from} \PY{n+nn}{tqdm}\PY{n+nn}{.}\PY{n+nn}{notebook} \PY{k+kn}{import} \PY{n}{trange}\PY{p}{,} \PY{n}{tqdm}
+
+
+\PY{c+c1}{\PYZsh{} Utility function for making log one line log, with updated best loss}
+\PY{k}{def} \PY{n+nf}{log}\PY{p}{(}\PY{n}{epoch}\PY{p}{,} \PY{n}{loss}\PY{p}{,} \PY{n}{best}\PY{p}{,} \PY{n}{one\PYZus{}line}\PY{p}{:} \PY{n+nb}{bool} \PY{o}{=} \PY{k+kc}{False}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{loss} \PY{o}{\PYZlt{}} \PY{n}{best}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{:}
+        \PY{n}{best} \PY{o}{=} \PY{p}{(}\PY{n}{epoch}\PY{p}{,} \PY{n}{loss}\PY{p}{)}
+    \PY{n}{best\PYZus{}epoch}\PY{p}{,} \PY{n}{best\PYZus{}loss} \PY{o}{=} \PY{n}{best}
+    \PY{n}{s} \PY{o}{=} \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Epoch: }\PY{l+s+si}{\PYZob{}}\PY{n}{epoch}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ | Loss: }\PY{l+s+si}{\PYZob{}}\PY{n}{loss}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ | Best loss: }\PY{l+s+si}{\PYZob{}}\PY{n}{best\PYZus{}loss}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ @ Epoch }\PY{l+s+si}{\PYZob{}}\PY{n}{best\PYZus{}epoch}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}
+    \PY{n}{s} \PY{o}{=} \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}r}\PY{l+s+si}{\PYZob{}}\PY{n}{s}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}} \PY{k}{if} \PY{n}{one\PYZus{}line} \PY{k}{else} \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{s}\PY{l+s+si}{\PYZcb{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}
+    \PY{n}{tqdm}\PY{o}{.}\PY{n}{write}\PY{p}{(}\PY{n}{s}\PY{p}{,} \PY{n}{end}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+
+\PY{k}{def} \PY{n+nf}{train}\PY{p}{(}\PY{n}{model}\PY{p}{:} \PY{n}{SM2GNN}\PY{p}{,} \PY{n}{data\PYZus{}loader}\PY{p}{:} \PY{n}{DataLoader}\PY{p}{,} \PY{n}{config}\PY{p}{:} \PY{n}{TrainConfig}\PY{p}{,} \PY{n}{one\PYZus{}line\PYZus{}log}\PY{p}{:} \PY{n+nb}{bool} \PY{o}{=} \PY{k+kc}{False}\PY{p}{)}\PY{p}{:}
+    \PY{n}{best\PYZus{}tuple} \PY{o}{=} \PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{inf}\PY{p}{)}
+    \PY{n}{dataset} \PY{o}{=} \PY{n}{data\PYZus{}loader}\PY{o}{.}\PY{n}{dataset}
+    \PY{n}{loss\PYZus{}fn} \PY{o}{=} \PY{n}{config}\PY{o}{.}\PY{n}{get\PYZus{}loss}\PY{p}{(}\PY{p}{)}
+    \PY{n}{optimizer} \PY{o}{=} \PY{n}{config}\PY{o}{.}\PY{n}{get\PYZus{}optimizer\PYZus{}for}\PY{p}{(}\PY{n}{model}\PY{p}{)}
+    \PY{n}{model}\PY{o}{.}\PY{n}{to}\PY{p}{(}\PY{n}{device}\PY{p}{)}
+    \PY{n}{model}\PY{o}{.}\PY{n}{reset\PYZus{}parameters}\PY{p}{(}\PY{p}{)}
+    \PY{n}{model}\PY{o}{.}\PY{n}{train}\PY{p}{(}\PY{p}{)}
+    \PY{k}{for} \PY{n}{epoch} \PY{o+ow}{in} \PY{n}{trange}\PY{p}{(}\PY{n}{config}\PY{o}{.}\PY{n}{num\PYZus{}epoch}\PY{p}{,} \PY{n}{unit}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Epochs}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{desc}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Training}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{:}
+
+        \PY{n}{epoch\PYZus{}loss} \PY{o}{=} \PY{l+m+mi}{0}
+        \PY{k}{for} \PY{n}{batch} \PY{o+ow}{in} \PY{n}{data\PYZus{}loader}\PY{p}{:}
+            \PY{n}{optimizer}\PY{o}{.}\PY{n}{zero\PYZus{}grad}\PY{p}{(}\PY{p}{)}
+            \PY{n}{batch}\PY{o}{.}\PY{n}{to}\PY{p}{(}\PY{n}{device}\PY{p}{)}
+            \PY{n}{out} \PY{o}{=} \PY{n}{model}\PY{p}{(}\PY{n}{batch}\PY{o}{.}\PY{n}{x}\PY{o}{.}\PY{n}{float}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{batch}\PY{o}{.}\PY{n}{edge\PYZus{}index}\PY{p}{)}
+            \PY{n}{label\PYZus{}mask} \PY{o}{=} \PY{p}{(}\PY{n}{batch}\PY{o}{.}\PY{n}{y} \PY{o}{!=} \PY{n}{ID\PYZus{}UNLABELED}\PY{p}{)}
+            \PY{n}{loss} \PY{o}{=} \PY{n}{loss\PYZus{}fn}\PY{p}{(}\PY{n}{out}\PY{p}{[}\PY{n}{label\PYZus{}mask}\PY{p}{]}\PY{p}{,}
+                           \PY{n}{batch}\PY{o}{.}\PY{n}{y}\PY{p}{[}\PY{n}{label\PYZus{}mask}\PY{p}{]}\PY{p}{)}
+            \PY{n}{loss}\PY{o}{.}\PY{n}{backward}\PY{p}{(}\PY{p}{)}
+            \PY{n}{optimizer}\PY{o}{.}\PY{n}{step}\PY{p}{(}\PY{p}{)}
+
+            \PY{n}{epoch\PYZus{}loss} \PY{o}{+}\PY{o}{=} \PY{n}{loss}\PY{o}{.}\PY{n}{item}\PY{p}{(}\PY{p}{)} \PY{o}{*} \PY{n}{batch}\PY{o}{.}\PY{n}{num\PYZus{}graphs}
+        \PY{n}{avg\PYZus{}epoch\PYZus{}loss} \PY{o}{=} \PY{n}{epoch\PYZus{}loss} \PY{o}{/} \PY{n+nb}{len}\PY{p}{(}\PY{n}{dataset}\PY{p}{)}
+        \PY{n}{log}\PY{p}{(}\PY{n}{epoch}\PY{p}{,} \PY{n}{avg\PYZus{}epoch\PYZus{}loss}\PY{p}{,} \PY{n}{best\PYZus{}tuple}\PY{p}{,} \PY{n}{one\PYZus{}line}\PY{o}{=}\PY{n}{one\PYZus{}line\PYZus{}log}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{testing}{%
+\subsection{Testing}\label{testing}}
+
+Testing method is very similar to training method, but it does not
+update the model parameters. It also does not use \texttt{DataLoader},
+as we want to get the predictions for all the nodes in the graph, but
+the difference is, that our model wasn't trained on the data in this
+set. That way, we can measure the performance of the model on the data
+it has never seen before.
+
+The method also has a parameter \texttt{in\_kfold}, that is used when we
+are doing cross-validation. If we are doing cross-validation, we don't
+want to do any extensive analysis, such as ROC curve, but rather only
+compute f1\_score.
+
+Notice, the \texttt{@torch.no\_grad()} decorator. It is used to tell
+PyTorch, that we don't want to compute gradients for this method,
+because we do not need them.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Test}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{metrics} \PY{k+kn}{import} \PY{n}{accuracy\PYZus{}score}\PY{p}{,} \PY{n}{f1\PYZus{}score}\PY{p}{,} \PY{n}{roc\PYZus{}curve}
+
+
+\PY{n+nd}{@torch}\PY{o}{.}\PY{n}{no\PYZus{}grad}\PY{p}{(}\PY{p}{)}
+\PY{k}{def} \PY{n+nf}{test}\PY{p}{(}\PY{n}{model}\PY{p}{:} \PY{n}{SM2GNN}\PY{p}{,} \PY{n}{data\PYZus{}loader}\PY{p}{:} \PY{n}{DataLoader}\PY{p}{,}
+         \PY{n}{in\PYZus{}kfold}\PY{p}{:} \PY{n+nb}{bool} \PY{o}{=} \PY{k+kc}{False}\PY{p}{)}\PY{p}{:}
+    \PY{n}{model}\PY{o}{.}\PY{n}{to}\PY{p}{(}\PY{n}{device}\PY{p}{)}
+    \PY{n}{model}\PY{o}{.}\PY{n}{eval}\PY{p}{(}\PY{p}{)}
+
+    \PY{n}{all\PYZus{}y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{]}\PY{p}{)}
+    \PY{n}{all\PYZus{}predicted} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{]}\PY{p}{)}
+    \PY{n}{all\PYZus{}predicted\PYZus{}is\PYZus{}1} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{]}\PY{p}{)}
+
+    \PY{k}{for} \PY{n}{batch} \PY{o+ow}{in} \PY{n}{tqdm}\PY{p}{(}\PY{n}{data\PYZus{}loader}\PY{p}{,} \PY{n}{unit}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Test cases}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{desc}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Testing}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{:}
+        \PY{n}{batch}\PY{o}{.}\PY{n}{to}\PY{p}{(}\PY{n}{device}\PY{p}{)}
+        \PY{n}{y\PYZus{}pred} \PY{o}{=} \PY{n}{model}\PY{p}{(}\PY{n}{batch}\PY{o}{.}\PY{n}{x}\PY{o}{.}\PY{n}{float}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{batch}\PY{o}{.}\PY{n}{edge\PYZus{}index}\PY{p}{)}\PY{o}{.}\PY{n}{to}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cpu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{batch}\PY{o}{.}\PY{n}{to}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cpu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+        \PY{n}{label\PYZus{}mask} \PY{o}{=} \PY{n}{batch}\PY{o}{.}\PY{n}{y} \PY{o}{!=} \PY{n}{ID\PYZus{}UNLABELED}
+        \PY{n}{y\PYZus{}true} \PY{o}{=} \PY{n}{batch}\PY{o}{.}\PY{n}{y}\PY{p}{[}\PY{n}{label\PYZus{}mask}\PY{p}{]}\PY{o}{.}\PY{n}{numpy}\PY{p}{(}\PY{p}{)}
+        \PY{n}{y\PYZus{}pred} \PY{o}{=} \PY{n}{y\PYZus{}pred}\PY{p}{[}\PY{n}{label\PYZus{}mask}\PY{p}{]}
+        \PY{n}{y\PYZus{}pred\PYZus{}arg} \PY{o}{=} \PY{n}{y\PYZus{}pred}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{dim}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{.}\PY{n}{numpy}\PY{p}{(}\PY{p}{)}
+
+        \PY{n}{all\PYZus{}predicted} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{all\PYZus{}predicted}\PY{p}{,} \PY{n}{y\PYZus{}pred\PYZus{}arg}\PY{p}{)}
+        \PY{n}{all\PYZus{}y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{all\PYZus{}y}\PY{p}{,} \PY{n}{y\PYZus{}true}\PY{p}{)}
+        \PY{k}{if} \PY{o+ow}{not} \PY{n}{in\PYZus{}kfold}\PY{p}{:}
+            \PY{c+c1}{\PYZsh{} Compute ROC curve and ROC area for class 1 = ID\PYZus{}LICIT}
+            \PY{n}{predicted\PYZus{}is\PYZus{}1} \PY{o}{=} \PY{n}{y\PYZus{}pred}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{numpy}\PY{p}{(}\PY{p}{)}
+            \PY{n}{all\PYZus{}predicted\PYZus{}is\PYZus{}1} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{all\PYZus{}predicted\PYZus{}is\PYZus{}1}\PY{p}{,} \PY{n}{predicted\PYZus{}is\PYZus{}1}\PY{p}{)}
+
+            \PY{n}{acc} \PY{o}{=} \PY{n}{accuracy\PYZus{}score}\PY{p}{(}\PY{n}{y\PYZus{}true}\PY{p}{,} \PY{n}{y\PYZus{}pred\PYZus{}arg}\PY{p}{)}
+            \PY{n}{f1} \PY{o}{=} \PY{n}{f1\PYZus{}score}\PY{p}{(}\PY{n}{y\PYZus{}true}\PY{p}{,} \PY{n}{y\PYZus{}pred\PYZus{}arg}\PY{p}{,} \PY{n}{average}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{macro}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+            \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Accuracy: }\PY{l+s+si}{\PYZob{}}\PY{n}{acc}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{, F1: }\PY{l+s+si}{\PYZob{}}\PY{n}{f1}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+    \PY{n}{all\PYZus{}f1} \PY{o}{=} \PY{n}{f1\PYZus{}score}\PY{p}{(}\PY{n}{all\PYZus{}y}\PY{p}{,} \PY{n}{all\PYZus{}predicted}\PY{p}{,} \PY{n}{average}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{macro}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+    \PY{k}{if} \PY{o+ow}{not} \PY{n}{in\PYZus{}kfold}\PY{p}{:}
+        \PY{n}{acc} \PY{o}{=} \PY{n}{accuracy\PYZus{}score}\PY{p}{(}\PY{n}{all\PYZus{}y}\PY{p}{,} \PY{n}{all\PYZus{}predicted}\PY{p}{)}
+        \PY{n}{f1} \PY{o}{=} \PY{n}{f1\PYZus{}score}\PY{p}{(}\PY{n}{all\PYZus{}y}\PY{p}{,} \PY{n}{all\PYZus{}predicted}\PY{p}{,} \PY{n}{average}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{macro}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Accuracy: }\PY{l+s+si}{\PYZob{}}\PY{n}{acc}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{, F1: }\PY{l+s+si}{\PYZob{}}\PY{n}{f1}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}
+            \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{True ratio of licit nodes: }\PY{l+s+si}{\PYZob{}}\PY{p}{(}\PY{n}{all\PYZus{}y} \PY{o}{==} \PY{n}{ID\PYZus{}LICIT}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{o}{/}\PY{n+nb}{len}\PY{p}{(}\PY{n}{all\PYZus{}y}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+            \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ratio of predicted licit nodes: }\PY{l+s+si}{\PYZob{}}\PY{p}{(}\PY{n}{all\PYZus{}predicted} \PY{o}{==} \PY{n}{ID\PYZus{}LICIT}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{o}{/}\PY{n+nb}{len}\PY{p}{(}\PY{n}{all\PYZus{}predicted}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n}{fpr}\PY{p}{,} \PY{n}{tpr}\PY{p}{,} \PY{n}{\PYZus{}} \PY{o}{=} \PY{n}{roc\PYZus{}curve}\PY{p}{(}\PY{n}{all\PYZus{}y}\PY{p}{,} \PY{n}{all\PYZus{}predicted\PYZus{}is\PYZus{}1}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{fpr}\PY{p}{,} \PY{n}{tpr}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{True Positive Rate}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{False Positive Rate}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+    \PY{k}{return} \PY{n}{all\PYZus{}f1}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{instantiating-the-model}{%
+\section{Instantiating the model}\label{instantiating-the-model}}
+
+\hypertarget{local-config}{%
+\subsection{Local config}\label{local-config}}
+
+First, we can try and run the model with default configuration. You are
+welcome to change the configuration (located in .json files), and see
+how it affects the performance of the model. By default, model
+configuration is stored in \texttt{local\_model\_config.json} and
+training configuration is stored in \texttt{local\_train\_config.json}.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Local JSON configuration}
+
+
+\PY{n}{fname} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{local\PYZus{}training\PYZus{}config.json}\PY{l+s+s1}{\PYZsq{}}
+\PY{k}{try}\PY{p}{:}
+    \PY{n}{config} \PY{o}{=} \PY{n}{TrainConfig}\PY{o}{.}\PY{n}{load}\PY{p}{(}\PY{n}{fname}\PY{p}{)}
+\PY{k}{except} \PY{n+ne}{FileNotFoundError}\PY{p}{:}
+    \PY{n}{config} \PY{o}{=} \PY{n}{TrainConfig}\PY{p}{(}
+        \PY{n}{num\PYZus{}epoch}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{,}
+        \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{32}\PY{p}{,}
+        \PY{n}{test\PYZus{}split}\PY{o}{=}\PY{l+m+mf}{0.2}\PY{p}{,}
+        \PY{n}{optimizer\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{adam}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+        \PY{n}{lr}\PY{o}{=}\PY{l+m+mf}{0.01}\PY{p}{,}
+        \PY{n}{weight\PYZus{}decay}\PY{o}{=}\PY{l+m+mf}{5e\PYZhy{}4}\PY{p}{,}
+        \PY{n}{loss\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cross\PYZus{}entropy}\PY{l+s+s1}{\PYZsq{}}
+    \PY{p}{)}\PY{o}{.}\PY{n}{save}\PY{p}{(}\PY{n}{fname}\PY{p}{)}
+
+\PY{n}{fname} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{local\PYZus{}model\PYZus{}config.json}\PY{l+s+s1}{\PYZsq{}}
+\PY{k}{try}\PY{p}{:}
+    \PY{n}{model\PYZus{}config} \PY{o}{=} \PY{n}{ModelConfig}\PY{o}{.}\PY{n}{load}\PY{p}{(}\PY{n}{fname}\PY{p}{)}
+\PY{k}{except} \PY{n+ne}{FileNotFoundError}\PY{p}{:}
+    \PY{n}{model\PYZus{}config} \PY{o}{=} \PY{n}{ModelConfig}\PY{p}{(}
+        \PY{n}{hidden\PYZus{}channels}\PY{o}{=}\PY{l+m+mi}{64}\PY{p}{,}
+        \PY{n}{num\PYZus{}hidden}\PY{o}{=}\PY{l+m+mi}{3}\PY{p}{,}
+        \PY{n}{conv\PYZus{}model}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{GATConv(2)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+        \PY{n}{dropout}\PY{o}{=}\PY{l+m+mf}{0.5}\PY{p}{,}
+        \PY{n}{nonlinearity}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{leaky\PYZus{}relu(0.2)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{save}\PY{p}{(}\PY{n}{fname}\PY{p}{)}
+
+\PY{n}{model} \PY{o}{=} \PY{n}{model\PYZus{}config}\PY{o}{.}\PY{n}{create}\PY{p}{(}\PY{p}{)}
+
+\PY{n}{\PYZus{}}\PY{p}{,} \PY{p}{(}\PY{n}{loader\PYZus{}X\PYZus{}train}\PY{p}{,} \PY{n}{loader\PYZus{}X\PYZus{}test}\PY{p}{)} \PY{o}{=} \PY{n}{split\PYZus{}and\PYZus{}create\PYZus{}loaders}\PY{p}{(}\PY{n}{config}\PY{p}{,} \PY{n}{dataset}\PY{p}{)}
+\PY{n}{train}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{loader\PYZus{}X\PYZus{}train}\PY{p}{,} \PY{n}{config}\PY{p}{,} \PY{n}{one\PYZus{}line\PYZus{}log}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Base\PYZhy{}predictor, with some default hyper\PYZhy{}parameter values}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{n}{f1} \PY{o}{=} \PY{n}{test}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{loader\PYZus{}X\PYZus{}test}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{F1 score: }\PY{l+s+si}{\PYZob{}}\PY{n}{f1}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/10 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 9 | Loss: 0.4783 | Best loss: 0.4783 @ Epoch 9
+Base-predictor, with some default hyper-parameter values
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/10 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Accuracy: 0.8491, F1: 0.7176
+Accuracy: 0.8738, F1: 0.8056
+Accuracy: 0.9274, F1: 0.7304
+Accuracy: 0.9722, F1: 0.5384
+Accuracy: 0.7496, F1: 0.5986
+Accuracy: 0.8836, F1: 0.7827
+Accuracy: 0.8662, F1: 0.7127
+Accuracy: 0.9350, F1: 0.4832
+Accuracy: 0.8508, F1: 0.5734
+Accuracy: 0.8953, F1: 0.6055
+Accuracy: 0.8830, F1: 0.6769
+True ratio of licit nodes: 0.8804558159535584
+Ratio of predicted licit nodes: 0.918297140399914
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{project_files/project_22_4.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+F1 score: 0.6769
+    \end{Verbatim}
+
+    \hypertarget{k-fold-cross-validation-for-hyper-parameter-tuning}{%
+\subsection{K-fold cross-validation for hyper-parameter
+tuning}\label{k-fold-cross-validation-for-hyper-parameter-tuning}}
+
+There are better ways of doing hyper-parameter tuning, then doing it by
+hand. We can use \href{https://optuna.org/}{Optuna} to do it for us.
+Optuna is a hyper-parameter tuning library, that supports many different
+types of hyper-parameter tuning algorithms. We will use
+\href{https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.TPESampler.html}{TPE}
+algorithm, which is a Bayesian optimization algorithm.
+
+The catch is, we need to define a function, that will reliably quantify
+the performance of the model, (or rather performance of the
+hyper-parameters). In the process of optimization, optuna will provide a
+\texttt{trial} object, that will provide us with the hyper-parameters,
+we will create and validate or model with this hyper-parameters, then
+return the result. Optuna will then use this result to decide, which
+hyper-parameters to try next.
+
+To reduce variance in our model, we will use k-fold cross-validation. We
+will split the data into \texttt{k} folds, and then train the model
+\texttt{k} times, each time using different fold for validation, and the
+rest for training. We will then average the performance of the model on
+all the folds. That will be our metric.
+
+It is worth noting, that the number of times, that our model will be
+trained, will be \texttt{k\ *\ n\_trials\ *\ epochs}. So, if we have 5
+folds, 20 trials, and 64 epochs, our model will be trained 6400 times.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} K\PYZhy{}Fold Cross Validation}
+
+\PY{k+kn}{from} \PY{n+nn}{torch}\PY{n+nn}{.}\PY{n+nn}{utils}\PY{n+nn}{.}\PY{n+nn}{data} \PY{k+kn}{import} \PY{n}{SubsetRandomSampler}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{model\PYZus{}selection} \PY{k+kn}{import} \PY{n}{RepeatedKFold}
+\PY{k+kn}{from} \PY{n+nn}{tqdm}\PY{n+nn}{.}\PY{n+nn}{notebook} \PY{k+kn}{import} \PY{n}{tqdm}
+
+
+\PY{k}{def} \PY{n+nf}{kfold}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{config}\PY{p}{:} \PY{n}{TrainConfig}\PY{p}{,} \PY{n}{train\PYZus{}dataset}\PY{p}{:}\PY{n}{List}\PY{p}{,} \PY{n}{n\PYZus{}splits}\PY{o}{=}\PY{l+m+mi}{5}\PY{p}{,} \PY{n}{n\PYZus{}repeats}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+    \PY{n}{f1\PYZus{}history} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+    \PY{n}{rkfold\PYZus{}splitter} \PY{o}{=} \PY{n}{RepeatedKFold}\PY{p}{(}\PY{n}{n\PYZus{}splits}\PY{o}{=}\PY{n}{n\PYZus{}splits}\PY{p}{,} \PY{n}{n\PYZus{}repeats}\PY{o}{=}\PY{n}{n\PYZus{}repeats}\PY{p}{)}
+
+    \PY{k}{for} \PY{p}{(}\PY{n}{train\PYZus{}idx}\PY{p}{,} \PY{n}{val\PYZus{}idx}\PY{p}{)} \PY{o+ow}{in} \PY{n}{tqdm}\PY{p}{(}\PY{n}{rkfold\PYZus{}splitter}\PY{o}{.}\PY{n}{split}\PY{p}{(}\PY{n}{train\PYZus{}dataset}\PY{p}{)}\PY{p}{,} \PY{n}{total}\PY{o}{=}\PY{n}{n\PYZus{}splits}\PY{o}{*}\PY{n}{n\PYZus{}repeats}\PY{p}{,} \PY{n}{desc}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{K\PYZhy{}Fold}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{:}
+        \PY{n}{train\PYZus{}sampler} \PY{o}{=} \PY{n}{SubsetRandomSampler}\PY{p}{(}\PY{n}{train\PYZus{}idx}\PY{p}{)}
+        \PY{n}{valid\PYZus{}sampler} \PY{o}{=} \PY{n}{SubsetRandomSampler}\PY{p}{(}\PY{n}{val\PYZus{}idx}\PY{p}{)}
+        \PY{n}{train\PYZus{}loader} \PY{o}{=} \PY{n}{DataLoader}\PY{p}{(}
+            \PY{n}{train\PYZus{}dataset}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{n}{config}\PY{o}{.}\PY{n}{batch\PYZus{}size}\PY{p}{,} \PY{n}{sampler}\PY{o}{=}\PY{n}{train\PYZus{}sampler}\PY{p}{)}
+        \PY{n}{valid\PYZus{}loader} \PY{o}{=} \PY{n}{DataLoader}\PY{p}{(}
+            \PY{n}{train\PYZus{}dataset}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{n}{config}\PY{o}{.}\PY{n}{batch\PYZus{}size}\PY{p}{,} \PY{n}{sampler}\PY{o}{=}\PY{n}{valid\PYZus{}sampler}\PY{p}{)}
+        \PY{n}{train}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{train\PYZus{}loader}\PY{p}{,} \PY{n}{config}\PY{p}{,} \PY{n}{one\PYZus{}line\PYZus{}log}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+        \PY{n}{f1} \PY{o}{=} \PY{n}{test}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{valid\PYZus{}loader}\PY{p}{,} \PY{n}{in\PYZus{}kfold}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+        \PY{n}{f1\PYZus{}history}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{f1}\PY{p}{)}
+    \PY{n}{avg\PYZus{}test\PYZus{}f1} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{f1\PYZus{}history}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Average F1: }\PY{l+s+si}{\PYZob{}}\PY{n}{avg\PYZus{}test\PYZus{}f1}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{k}{return} \PY{n}{avg\PYZus{}test\PYZus{}f1}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Hyperparameter search}
+\PY{k+kn}{import} \PY{n+nn}{optuna}
+\PY{k+kn}{from} \PY{n+nn}{optuna}\PY{n+nn}{.}\PY{n+nn}{samplers} \PY{k+kn}{import} \PY{n}{TPESampler}
+
+\PY{n}{N\PYZus{}TRIALS} \PY{o}{=} \PY{l+m+mi}{20}
+
+\PY{k}{def} \PY{n+nf}{objective}\PY{p}{(}\PY{n}{trial}\PY{p}{)}\PY{p}{:}
+    \PY{k}{global} \PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{base\PYZus{}train\PYZus{}conf}
+    \PY{n}{model\PYZus{}config} \PY{o}{=} \PY{n}{ModelConfig}\PY{p}{(}
+        \PY{n}{hidden\PYZus{}channels}\PY{o}{=}\PY{n}{trial}\PY{o}{.}\PY{n}{suggest\PYZus{}int}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{hidden\PYZus{}channels}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{,}
+        \PY{n}{num\PYZus{}hidden}\PY{o}{=}\PY{n}{trial}\PY{o}{.}\PY{n}{suggest\PYZus{}int}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{num\PYZus{}hidden}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{,}
+        \PY{n}{conv\PYZus{}model}\PY{o}{=}\PY{n}{trial}\PY{o}{.}\PY{n}{suggest\PYZus{}categorical}\PY{p}{(}
+            \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{conv\PYZus{}model}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{GATConv(1)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{GATConv(2)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{GATConv(3)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{GATConv(4)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{GCNConv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{,}
+        \PY{n}{conv\PYZus{}args}\PY{o}{=}\PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}\PY{p}{,}
+        \PY{n}{dropout}\PY{o}{=}\PY{n}{trial}\PY{o}{.}\PY{n}{suggest\PYZus{}float}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dropout}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{)}\PY{p}{,}
+        \PY{n}{nonlinearity}\PY{o}{=}\PY{n}{trial}\PY{o}{.}\PY{n}{suggest\PYZus{}categorical}\PY{p}{(}
+            \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{nonlinearity}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{relu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{leaky\PYZus{}relu(0.2)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sigmoid}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+    \PY{p}{)}
+    \PY{n}{config} \PY{o}{=} \PY{n}{base\PYZus{}train\PYZus{}conf}\PY{o}{.}\PY{n}{update\PYZus{}keys}\PY{p}{(}
+        \PY{n}{lr}\PY{o}{=}\PY{n}{trial}\PY{o}{.}\PY{n}{suggest\PYZus{}float}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{lr}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+m+mf}{1e\PYZhy{}4}\PY{p}{,} \PY{l+m+mf}{1e\PYZhy{}1}\PY{p}{,} \PY{n}{log}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{p}{,}
+        \PY{n}{weight\PYZus{}decay}\PY{o}{=}\PY{n}{trial}\PY{o}{.}\PY{n}{suggest\PYZus{}float}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{weight\PYZus{}decay}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+m+mf}{1e\PYZhy{}5}\PY{p}{,} \PY{l+m+mf}{1e\PYZhy{}1}\PY{p}{,} \PY{n}{log}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{p}{,}
+        \PY{n}{class\PYZus{}weight}\PY{o}{=}\PY{n}{trial}\PY{o}{.}\PY{n}{suggest\PYZus{}float}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{class\PYZus{}weight}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+m+mf}{0.6}\PY{p}{,} \PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{log}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+    \PY{p}{)}
+    \PY{n}{model} \PY{o}{=} \PY{n}{model\PYZus{}config}\PY{o}{.}\PY{n}{create}\PY{p}{(}\PY{p}{)}
+    \PY{k}{return} \PY{n}{kfold}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{config}\PY{p}{,} \PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{n\PYZus{}splits}\PY{o}{=}\PY{l+m+mi}{5}\PY{p}{,} \PY{n}{n\PYZus{}repeats}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+
+
+\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{\PYZus{}}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{n}{loader\PYZus{}X\PYZus{}train}\PY{p}{,} \PY{n}{loader\PYZus{}X\PYZus{}test}\PY{p}{)} \PY{o}{=} \PY{n}{split\PYZus{}and\PYZus{}create\PYZus{}loaders}\PY{p}{(}\PY{n}{config}\PY{p}{,} \PY{n}{dataset}\PY{p}{)}
+\PY{n}{base\PYZus{}train\PYZus{}conf} \PY{o}{=} \PY{n}{TrainConfig}\PY{p}{(}
+    \PY{n}{num\PYZus{}epoch}\PY{o}{=}\PY{l+m+mi}{64}\PY{p}{,}
+    \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{8}\PY{p}{,}
+    \PY{n}{test\PYZus{}split}\PY{o}{=}\PY{l+m+mf}{0.2}\PY{p}{,}  \PY{c+c1}{\PYZsh{} Not used in kfold}
+    \PY{n}{optimizer\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{adam}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+    \PY{n}{lr}\PY{o}{=}\PY{l+m+mf}{1e\PYZhy{}4}\PY{p}{,}
+    \PY{n}{weight\PYZus{}decay}\PY{o}{=}\PY{l+m+mf}{1e\PYZhy{}5}\PY{p}{,}
+    \PY{n}{loss\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cross\PYZus{}entropy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+    \PY{n}{class\PYZus{}weight}\PY{o}{=}\PY{l+m+mf}{0.9}
+\PY{p}{)}
+\PY{n}{study} \PY{o}{=} \PY{n}{optuna}\PY{o}{.}\PY{n}{create\PYZus{}study}\PY{p}{(}\PY{n}{direction}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{maximize}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{sampler}\PY{o}{=}\PY{n}{TPESampler}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{k}{try}\PY{p}{:}
+    \PY{n}{study}\PY{o}{.}\PY{n}{optimize}\PY{p}{(}\PY{n}{objective}\PY{p}{,} \PY{n}{n\PYZus{}trials}\PY{o}{=}\PY{n}{N\PYZus{}TRIALS}\PY{p}{,} \PY{n}{show\PYZus{}progress\PYZus{}bar}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{k}{except} \PY{n+ne}{KeyboardInterrupt}\PY{p}{:}
+    \PY{k}{pass}
+\PY{k}{except} \PY{n+ne}{Exception} \PY{k}{as} \PY{n}{e}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{e}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{ansi-green}{[I 2023-03-26 00:53:47,733]} A new study created in memory with name:
+no-name-f4895a29-7e7a-4e62-99e2-deed821eb5bb
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+  0\%|          | 0/20 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3240 | Best loss: 0.3240 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3167 | Best loss: 0.3167 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3173 | Best loss: 0.3173 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3241 | Best loss: 0.3241 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3486 | Best loss: 0.3486 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.8050229835960678
+\textcolor{ansi-green}{[I 2023-03-26 00:54:27,111]} Trial 0 finished with value:
+0.8050229835960678 and parameters: \{'hidden\_channels': 3, 'num\_hidden': 1,
+'conv\_model': 'GATConv(2)', 'dropout': 0.1756387005082564, 'nonlinearity':
+'leaky\_relu(0.2)', 'lr': 0.014061001786285499, 'weight\_decay':
+0.00019033250020679288, 'class\_weight': 0.6757793698217697\}. Best is trial 0
+with value: 0.8050229835960678.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4833 | Best loss: 0.4833 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.5046 | Best loss: 0.5046 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.5022 | Best loss: 0.5022 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4773 | Best loss: 0.4773 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4860 | Best loss: 0.4860 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.5835672462111876
+\textcolor{ansi-green}{[I 2023-03-26 00:55:17,160]} Trial 1 finished with value:
+0.5835672462111876 and parameters: \{'hidden\_channels': 2, 'num\_hidden': 4,
+'conv\_model': 'GATConv(1)', 'dropout': 0.3317513267495553, 'nonlinearity':
+'leaky\_relu(0.2)', 'lr': 0.00216727914450081, 'weight\_decay':
+0.024231106509107186, 'class\_weight': 0.8393694720344731\}. Best is trial 0 with
+value: 0.8050229835960678.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.5103 | Best loss: 0.5103 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.5080 | Best loss: 0.5080 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4945 | Best loss: 0.4945 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4845 | Best loss: 0.4845 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4937 | Best loss: 0.4937 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.5500740634251169
+\textcolor{ansi-green}{[I 2023-03-26 00:55:54,326]} Trial 2 finished with value:
+0.5500740634251169 and parameters: \{'hidden\_channels': 3, 'num\_hidden': 2,
+'conv\_model': 'GCNConv', 'dropout': 0.393645246708328, 'nonlinearity': 'relu',
+'lr': 0.0002596177551118075, 'weight\_decay': 0.00042845063910544785,
+'class\_weight': 0.7587391737725576\}. Best is trial 0 with value:
+0.8050229835960678.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3684 | Best loss: 0.3684 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3771 | Best loss: 0.3771 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3727 | Best loss: 0.3727 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3792 | Best loss: 0.3792 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3942 | Best loss: 0.3942 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.4804377539175248
+\textcolor{ansi-green}{[I 2023-03-26 00:56:34,734]} Trial 3 finished with value:
+0.4804377539175248 and parameters: \{'hidden\_channels': 6, 'num\_hidden': 3,
+'conv\_model': 'GCNConv', 'dropout': 0.17536396015692804, 'nonlinearity':
+'sigmoid', 'lr': 0.0017230739376030816, 'weight\_decay': 0.0029201801924565994,
+'class\_weight': 0.6103704175651736\}. Best is trial 0 with value:
+0.8050229835960678.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4590 | Best loss: 0.4590 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4663 | Best loss: 0.4663 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4746 | Best loss: 0.4746 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4955 | Best loss: 0.4955 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4971 | Best loss: 0.4971 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.6527982515135663
+\textcolor{ansi-green}{[I 2023-03-26 00:57:13,373]} Trial 4 finished with value:
+0.6527982515135663 and parameters: \{'hidden\_channels': 3, 'num\_hidden': 1,
+'conv\_model': 'GATConv(2)', 'dropout': 0.3214771927491038, 'nonlinearity':
+'sigmoid', 'lr': 0.0006039692355513586, 'weight\_decay': 4.1247739181460046e-05,
+'class\_weight': 0.7964657511815498\}. Best is trial 0 with value:
+0.8050229835960678.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.5088 | Best loss: 0.5088 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.5303 | Best loss: 0.5303 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.5021 | Best loss: 0.5021 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.5279 | Best loss: 0.5279 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.5776 | Best loss: 0.5776 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.472979039537028
+\textcolor{ansi-green}{[I 2023-03-26 00:57:50,859]} Trial 5 finished with value:
+0.472979039537028 and parameters: \{'hidden\_channels': 4, 'num\_hidden': 2,
+'conv\_model': 'GCNConv', 'dropout': 0.19735844756802026, 'nonlinearity': 'relu',
+'lr': 0.00012400301132408246, 'weight\_decay': 5.974635013883002e-05,
+'class\_weight': 0.7548434111110413\}. Best is trial 0 with value:
+0.8050229835960678.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.5257 | Best loss: 0.5257 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4443 | Best loss: 0.4443 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4116 | Best loss: 0.4116 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4128 | Best loss: 0.4128 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4381 | Best loss: 0.4381 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.691276877962822
+\textcolor{ansi-green}{[I 2023-03-26 00:58:36,675]} Trial 6 finished with value:
+0.691276877962822 and parameters: \{'hidden\_channels': 2, 'num\_hidden': 3,
+'conv\_model': 'GATConv(2)', 'dropout': 0.21686169107322126, 'nonlinearity':
+'relu', 'lr': 0.029822881605671845, 'weight\_decay': 1.2713411451056067e-05,
+'class\_weight': 0.8309044006753052\}. Best is trial 0 with value:
+0.8050229835960678.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.5440 | Best loss: 0.5440 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.5450 | Best loss: 0.5450 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.5501 | Best loss: 0.5501 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.5544 | Best loss: 0.5544 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.5713 | Best loss: 0.5713 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.4876756603111465
+\textcolor{ansi-green}{[I 2023-03-26 00:59:18,978]} Trial 7 finished with value:
+0.4876756603111465 and parameters: \{'hidden\_channels': 3, 'num\_hidden': 4,
+'conv\_model': 'GCNConv', 'dropout': 0.4779686159767417, 'nonlinearity': 'relu',
+'lr': 0.0006060038321533186, 'weight\_decay': 0.0011284390119565947,
+'class\_weight': 0.8860999024320404\}. Best is trial 0 with value:
+0.8050229835960678.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4966 | Best loss: 0.4966 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4826 | Best loss: 0.4826 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4829 | Best loss: 0.4829 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4876 | Best loss: 0.4876 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.5034 | Best loss: 0.5034 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.5868720626007237
+\textcolor{ansi-green}{[I 2023-03-26 00:59:57,406]} Trial 8 finished with value:
+0.5868720626007237 and parameters: \{'hidden\_channels': 5, 'num\_hidden': 2,
+'conv\_model': 'GCNConv', 'dropout': 0.12142066431859133, 'nonlinearity':
+'sigmoid', 'lr': 0.00026114850371008276, 'weight\_decay': 0.02906188639926605,
+'class\_weight': 0.7180696714307971\}. Best is trial 0 with value:
+0.8050229835960678.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4524 | Best loss: 0.4524 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4718 | Best loss: 0.4718 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4617 | Best loss: 0.4617 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4691 | Best loss: 0.4691 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.4859 | Best loss: 0.4859 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.5595253452480325
+\textcolor{ansi-green}{[I 2023-03-26 01:00:48,679]} Trial 9 finished with value:
+0.5595253452480325 and parameters: \{'hidden\_channels': 4, 'num\_hidden': 4,
+'conv\_model': 'GATConv(3)', 'dropout': 0.12527901538875189, 'nonlinearity':
+'relu', 'lr': 0.00023912529409081306, 'weight\_decay': 2.6424087029657542e-05,
+'class\_weight': 0.660281004421\}. Best is trial 0 with value:
+0.8050229835960678.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3110 | Best loss: 0.3110 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3139 | Best loss: 0.3139 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3145 | Best loss: 0.3145 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3182 | Best loss: 0.3182 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3245 | Best loss: 0.3245 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.8293312066375517
+\textcolor{ansi-green}{[I 2023-03-26 01:01:29,521]} Trial 10 finished with value:
+0.8293312066375517 and parameters: \{'hidden\_channels': 5, 'num\_hidden': 1,
+'conv\_model': 'GATConv(4)', 'dropout': 0.2468792531775084, 'nonlinearity':
+'leaky\_relu(0.2)', 'lr': 0.020372808333453195, 'weight\_decay':
+0.00019747515649768402, 'class\_weight': 0.6989627867547363\}. Best is trial 10
+with value: 0.8293312066375517.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3121 | Best loss: 0.3121 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3103 | Best loss: 0.3103 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3172 | Best loss: 0.3172 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3185 | Best loss: 0.3185 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3266 | Best loss: 0.3266 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.8103209636428105
+\textcolor{ansi-green}{[I 2023-03-26 01:02:13,212]} Trial 11 finished with value:
+0.8103209636428105 and parameters: \{'hidden\_channels': 5, 'num\_hidden': 1,
+'conv\_model': 'GATConv(4)', 'dropout': 0.2538350581843532, 'nonlinearity':
+'leaky\_relu(0.2)', 'lr': 0.019539112736952052, 'weight\_decay':
+0.00016944141046714087, 'class\_weight': 0.6887898693802764\}. Best is trial 10
+with value: 0.8293312066375517.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3250 | Best loss: 0.3250 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3343 | Best loss: 0.3343 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3284 | Best loss: 0.3284 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3317 | Best loss: 0.3317 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3323 | Best loss: 0.3323 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.7773780870078155
+\textcolor{ansi-green}{[I 2023-03-26 01:02:57,914]} Trial 12 finished with value:
+0.7773780870078155 and parameters: \{'hidden\_channels': 6, 'num\_hidden': 1,
+'conv\_model': 'GATConv(4)', 'dropout': 0.2597077087226013, 'nonlinearity':
+'leaky\_relu(0.2)', 'lr': 0.049503075625930516, 'weight\_decay':
+0.0002325273269355843, 'class\_weight': 0.7103058446466682\}. Best is trial 10
+with value: 0.8293312066375517.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3076 | Best loss: 0.3076 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3061 | Best loss: 0.3061 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3163 | Best loss: 0.3163 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3154 | Best loss: 0.3154 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3129 | Best loss: 0.3129 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.8093379364729725
+\textcolor{ansi-green}{[I 2023-03-26 01:03:38,615]} Trial 13 finished with value:
+0.8093379364729725 and parameters: \{'hidden\_channels': 5, 'num\_hidden': 1,
+'conv\_model': 'GATConv(4)', 'dropout': 0.26464691259859846, 'nonlinearity':
+'leaky\_relu(0.2)', 'lr': 0.013282460564014147, 'weight\_decay':
+0.0001114681505578202, 'class\_weight': 0.6753781707073394\}. Best is trial 10
+with value: 0.8293312066375517.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3648 | Best loss: 0.3648 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3673 | Best loss: 0.3673 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3701 | Best loss: 0.3701 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3538 | Best loss: 0.3538 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3822 | Best loss: 0.3822 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.556063415846957
+\textcolor{ansi-green}{[I 2023-03-26 01:04:25,171]} Trial 14 finished with value:
+0.556063415846957 and parameters: \{'hidden\_channels': 5, 'num\_hidden': 2,
+'conv\_model': 'GATConv(4)', 'dropout': 0.26675391843190377, 'nonlinearity':
+'leaky\_relu(0.2)', 'lr': 0.08796073152652151, 'weight\_decay':
+0.0010798167794259387, 'class\_weight': 0.6418153649293008\}. Best is trial 10
+with value: 0.8293312066375517.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3231 | Best loss: 0.3231 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3216 | Best loss: 0.3216 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3322 | Best loss: 0.3322 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3323 | Best loss: 0.3323 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3487 | Best loss: 0.3487 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.775065635318541
+\textcolor{ansi-green}{[I 2023-03-26 01:05:06,738]} Trial 15 finished with value:
+0.775065635318541 and parameters: \{'hidden\_channels': 5, 'num\_hidden': 1,
+'conv\_model': 'GATConv(4)', 'dropout': 0.3591346156522245, 'nonlinearity':
+'leaky\_relu(0.2)', 'lr': 0.007079779287433676, 'weight\_decay':
+0.00011920886370183674, 'class\_weight': 0.7062037130872405\}. Best is trial 10
+with value: 0.8293312066375517.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3022 | Best loss: 0.3022 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.2994 | Best loss: 0.2994 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3075 | Best loss: 0.3075 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3025 | Best loss: 0.3025 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3205 | Best loss: 0.3205 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.8404763880295162
+\textcolor{ansi-green}{[I 2023-03-26 01:05:55,578]} Trial 16 finished with value:
+0.8404763880295162 and parameters: \{'hidden\_channels': 6, 'num\_hidden': 1,
+'conv\_model': 'GATConv(4)', 'dropout': 0.23584422491757592, 'nonlinearity':
+'leaky\_relu(0.2)', 'lr': 0.006338949614745882, 'weight\_decay':
+1.0162726722370981e-05, 'class\_weight': 0.6274482910859682\}. Best is trial 16
+with value: 0.8404763880295162.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3378 | Best loss: 0.3378 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3234 | Best loss: 0.3234 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3440 | Best loss: 0.3440 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3422 | Best loss: 0.3422 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3377 | Best loss: 0.3377 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.7414277833528977
+\textcolor{ansi-green}{[I 2023-03-26 01:06:43,767]} Trial 17 finished with value:
+0.7414277833528977 and parameters: \{'hidden\_channels': 6, 'num\_hidden': 3,
+'conv\_model': 'GATConv(1)', 'dropout': 0.22206263172773305, 'nonlinearity':
+'leaky\_relu(0.2)', 'lr': 0.005510483743330551, 'weight\_decay':
+1.1614295444332162e-05, 'class\_weight': 0.6313308795651731\}. Best is trial 16
+with value: 0.8404763880295162.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3193 | Best loss: 0.3193 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3185 | Best loss: 0.3185 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3164 | Best loss: 0.3164 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3099 | Best loss: 0.3099 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3273 | Best loss: 0.3273 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.7941154645057069
+\textcolor{ansi-green}{[I 2023-03-26 01:07:27,857]} Trial 18 finished with value:
+0.7941154645057069 and parameters: \{'hidden\_channels': 6, 'num\_hidden': 2,
+'conv\_model': 'GATConv(3)', 'dropout': 0.3067347476548074, 'nonlinearity':
+'leaky\_relu(0.2)', 'lr': 0.00621767472037639, 'weight\_decay':
+2.9805970828869437e-05, 'class\_weight': 0.6000357099469708\}. Best is trial 16
+with value: 0.8404763880295162.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+K-Fold:   0\%|          | 0/5 [00:00<?, ?it/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.2930 | Best loss: 0.2930 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3074 | Best loss: 0.3074 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3046 | Best loss: 0.3046 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3097 | Best loss: 0.3097 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3083 | Best loss: 0.3083 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/1 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Average F1: 0.8042474092729279
+\textcolor{ansi-green}{[I 2023-03-26 01:08:08,270]} Trial 19 finished with value:
+0.8042474092729279 and parameters: \{'hidden\_channels': 4, 'num\_hidden': 1,
+'conv\_model': 'GATConv(4)', 'dropout': 0.1566657093039789, 'nonlinearity':
+'leaky\_relu(0.2)', 'lr': 0.03721284738305837, 'weight\_decay':
+1.0542480978198916e-05, 'class\_weight': 0.6316899737148103\}. Best is trial 16
+with value: 0.8404763880295162.
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Report on the best trial}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Number of finished trials:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n+nb}{len}\PY{p}{(}\PY{n}{study}\PY{o}{.}\PY{n}{trials}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Best trial:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{study}\PY{o}{.}\PY{n}{best\PYZus{}trial}\PY{o}{.}\PY{n}{params}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Best value:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{study}\PY{o}{.}\PY{n}{best\PYZus{}value}\PY{p}{)}
+
+\PY{n}{best\PYZus{}model\PYZus{}conf} \PY{o}{=} \PY{n}{ModelConfig}\PY{o}{.}\PY{n}{from\PYZus{}dict}\PY{p}{(}\PY{n}{study}\PY{o}{.}\PY{n}{best\PYZus{}trial}\PY{o}{.}\PY{n}{params}\PY{p}{)}\PYZbs{}
+    \PY{o}{.}\PY{n}{save}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{local\PYZus{}best\PYZus{}model\PYZus{}config.json}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{best\PYZus{}training\PYZus{}conf} \PY{o}{=} \PY{n}{base\PYZus{}train\PYZus{}conf}\PY{o}{.}\PY{n}{update\PYZus{}keys}\PY{p}{(}\PY{o}{*}\PY{o}{*}\PY{n}{study}\PY{o}{.}\PY{n}{best\PYZus{}trial}\PY{o}{.}\PY{n}{params}\PY{p}{)}\PYZbs{}
+    \PY{o}{.}\PY{n}{save}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{local\PYZus{}best\PYZus{}train\PYZus{}config.json}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Number of finished trials: 20
+Best trial: \{'hidden\_channels': 6, 'num\_hidden': 1, 'conv\_model': 'GATConv(4)',
+'dropout': 0.23584422491757592, 'nonlinearity': 'leaky\_relu(0.2)', 'lr':
+0.006338949614745882, 'weight\_decay': 1.0162726722370981e-05, 'class\_weight':
+0.6274482910859682\}
+Best value: 0.8404763880295162
+    \end{Verbatim}
+
+    \hypertarget{local-best-config}{%
+\subsection{Local Best config}\label{local-best-config}}
+
+Finally, we can use the best hyper-parameters to train the model on the
+whole training dataset, rather then only on the k-folds, and then test
+it on entirely unseen data.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Training with best hyperparameters on the whole dataset}
+
+\PY{n}{model} \PY{o}{=} \PY{n}{best\PYZus{}model\PYZus{}conf}\PY{o}{.}\PY{n}{create}\PY{p}{(}\PY{p}{)}
+\PY{n}{train}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{loader\PYZus{}X\PYZus{}train}\PY{p}{,} \PY{n}{best\PYZus{}training\PYZus{}conf}\PY{p}{,} \PY{n}{one\PYZus{}line\PYZus{}log}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Save the model}
+\PY{n}{torch}\PY{o}{.}\PY{n}{save}\PY{p}{(}\PY{n}{model}\PY{o}{.}\PY{n}{state\PYZus{}dict}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{local\PYZus{}best\PYZus{}model.pt}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{f1} \PY{o}{=} \PY{n}{test}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{loader\PYZus{}X\PYZus{}test}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Final F1 score: }\PY{l+s+si}{\PYZob{}}\PY{n}{f1}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Training:   0\%|          | 0/64 [00:00<?, ?Epochs/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch: 63 | Loss: 0.3952 | Best loss: 0.3952 @ Epoch 63
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Testing:   0\%|          | 0/10 [00:00<?, ?Test cases/s]
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Accuracy: 0.9344, F1: 0.8495
+Accuracy: 0.9701, F1: 0.6696
+Accuracy: 0.9040, F1: 0.8345
+Accuracy: 0.9620, F1: 0.4903
+Accuracy: 0.9401, F1: 0.8234
+Accuracy: 0.9836, F1: 0.5393
+Accuracy: 0.9613, F1: 0.9523
+Accuracy: 0.9183, F1: 0.8326
+Accuracy: 0.9723, F1: 0.7870
+Accuracy: 0.9450, F1: 0.8489
+Accuracy: 0.9512, F1: 0.8284
+True ratio of licit nodes: 0.916378262089608
+Ratio of predicted licit nodes: 0.9294733888317276
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{project_files/project_28_4.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Final F1 score: 0.8284
+    \end{Verbatim}
+
+    \hypertarget{model-visualization}{%
+\section{Model visualization}\label{model-visualization}}
+
+Finaly, we can try to at least partially understand the model by
+dissecting it.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Model visualization}
+
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{decomposition} \PY{k+kn}{import} \PY{n}{PCA}
+
+\PY{n}{num\PYZus{}tests} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{loader\PYZus{}X\PYZus{}test}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{14}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{)}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{n}{data} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{loader\PYZus{}X\PYZus{}test}\PY{p}{)}\PY{p}{:}
+    \PY{n}{data}\PY{o}{.}\PY{n}{to}\PY{p}{(}\PY{n}{device}\PY{p}{)}
+    \PY{n}{out} \PY{o}{=} \PY{n}{model}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{x}\PY{o}{.}\PY{n}{float}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{data}\PY{o}{.}\PY{n}{edge\PYZus{}index}\PY{p}{,}
+                \PY{n}{return\PYZus{}embeddings}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{o}{.}\PY{n}{detach}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{cpu}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{numpy}\PY{p}{(}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{n}{num\PYZus{}tests}\PY{o}{/}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}
+    \PY{n}{pca} \PY{o}{=} \PY{n}{PCA}\PY{p}{(}\PY{n}{n\PYZus{}components}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}
+    \PY{n}{pca\PYZus{}features} \PY{o}{=} \PY{n}{pca}\PY{o}{.}\PY{n}{fit\PYZus{}transform}\PY{p}{(}\PY{n}{out}\PY{p}{)}
+
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{data}\PY{p}{)}
+    \PY{n}{idxLicit} \PY{o}{=} \PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{y} \PY{o}{==} \PY{n}{ID\PYZus{}LICIT}\PY{p}{)}\PY{o}{.}\PY{n}{cpu}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{numpy}\PY{p}{(}\PY{p}{)}
+    \PY{n}{idxIlicit} \PY{o}{=} \PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{y} \PY{o}{==} \PY{n}{ID\PYZus{}ILLICIT}\PY{p}{)}\PY{o}{.}\PY{n}{cpu}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{numpy}\PY{p}{(}\PY{p}{)}
+
+    \PY{n}{LicitPoints} \PY{o}{=} \PY{n}{pca\PYZus{}features}\PY{p}{[}\PY{n}{idxLicit}\PY{p}{]}
+    \PY{n}{IlicitPoints} \PY{o}{=} \PY{n}{pca\PYZus{}features}\PY{p}{[}\PY{n}{idxIlicit}\PY{p}{]}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{scatter}\PY{p}{(}\PY{n}{LicitPoints}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{LicitPoints}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{scatter}\PY{p}{(}\PY{n}{IlicitPoints}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{IlicitPoints}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+DataBatch(x=[5507, 165], edge\_index=[2, 6351], y=[5507], batch=[5507], ptr=[2])
+DataBatch(x=[6393, 165], edge\_index=[2, 7813], y=[6393], batch=[6393], ptr=[2])
+DataBatch(x=[2314, 165], edge\_index=[2, 2619], y=[2314], batch=[2314], ptr=[2])
+DataBatch(x=[5063, 165], edge\_index=[2, 5950], y=[5063], batch=[5063], ptr=[2])
+DataBatch(x=[7140, 165], edge\_index=[2, 8493], y=[7140], batch=[7140], ptr=[2])
+DataBatch(x=[6621, 165], edge\_index=[2, 8316], y=[6621], batch=[6621], ptr=[2])
+DataBatch(x=[1653, 165], edge\_index=[2, 1717], y=[1653], batch=[1653], ptr=[2])
+DataBatch(x=[2816, 165], edge\_index=[2, 3049], y=[2816], batch=[2816], ptr=[2])
+DataBatch(x=[2047, 165], edge\_index=[2, 2213], y=[2047], batch=[2047], ptr=[2])
+DataBatch(x=[3506, 165], edge\_index=[2, 3838], y=[3506], batch=[3506], ptr=[2])
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{project_files/project_30_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{model-evaluation-on-a-graph}{%
+\section{Model evaluation on a
+graph}\label{model-evaluation-on-a-graph}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Model evaluation on a single graph}
+
+
+\PY{k}{def} \PY{n+nf}{predict\PYZus{}node\PYZus{}class}\PY{p}{(}\PY{n}{batch}\PY{p}{,} \PY{n}{model}\PY{p}{)}\PY{p}{:}
+    \PY{n}{model}\PY{o}{.}\PY{n}{eval}\PY{p}{(}\PY{p}{)}
+    \PY{k}{with} \PY{n}{torch}\PY{o}{.}\PY{n}{no\PYZus{}grad}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+        \PY{n}{batch}\PY{o}{.}\PY{n}{to}\PY{p}{(}\PY{n}{device}\PY{p}{)}
+        \PY{n}{out} \PY{o}{=} \PY{n}{model}\PY{p}{(}\PY{n}{batch}\PY{o}{.}\PY{n}{x}\PY{o}{.}\PY{n}{float}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{batch}\PY{o}{.}\PY{n}{edge\PYZus{}index}\PY{p}{)}
+        \PY{k}{return} \PY{n}{out}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{dim}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+
+\PY{n}{subgraph} \PY{o}{=} \PY{n}{dataset}\PY{p}{[}\PY{n}{min\PYZus{}idx}\PY{p}{]}
+\PY{n}{batch} \PY{o}{=} \PY{n}{from\PYZus{}networkx}\PY{p}{(}\PY{n}{subgraph}\PY{p}{)}\PY{o}{.}\PY{n}{to}\PY{p}{(}\PY{n}{device}\PY{p}{)}
+\PY{n}{pred} \PY{o}{=} \PY{n}{predict\PYZus{}node\PYZus{}class}\PY{p}{(}\PY{n}{batch}\PY{p}{,} \PY{n}{model}\PY{p}{)}
+
+\PY{n}{label\PYZus{}mask} \PY{o}{=} \PY{p}{(}\PY{n}{batch}\PY{o}{.}\PY{n}{y} \PY{o}{==} \PY{n}{ID\PYZus{}UNLABELED}\PY{p}{)}
+\PY{n}{batch}\PY{o}{.}\PY{n}{y}\PY{p}{[}\PY{n}{label\PYZus{}mask}\PY{p}{]} \PY{o}{=} \PY{n}{pred}\PY{p}{[}\PY{n}{label\PYZus{}mask}\PY{p}{]}
+
+\PY{n}{labels\PYZus{}dict} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+\PY{k}{for} \PY{n}{i}\PY{p}{,}\PY{n}{node} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{subgraph}\PY{o}{.}\PY{n}{nodes}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{n}{labels\PYZus{}dict}\PY{p}{[}\PY{n}{node}\PY{p}{]} \PY{o}{=} \PY{n}{batch}\PY{o}{.}\PY{n}{y}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{item}\PY{p}{(}\PY{p}{)}
+
+\PY{n}{nx}\PY{o}{.}\PY{n}{set\PYZus{}node\PYZus{}attributes}\PY{p}{(}\PY{n}{subgraph}\PY{p}{,} \PY{n}{labels\PYZus{}dict}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{new}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{colors\PYZus{}full} \PY{o}{=} \PY{p}{[}\PY{n}{color\PYZus{}map}\PY{p}{[}\PY{n}{attrs}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{new}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{]} \PY{k}{for} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{attrs} \PY{o+ow}{in} \PY{n}{smallest\PYZus{}subgraph}\PY{o}{.}\PY{n}{nodes}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{p}{]}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{poz} \PY{o}{=} \PY{n}{nx}\PY{o}{.}\PY{n}{spring\PYZus{}layout}\PY{p}{(}\PY{n}{smallest\PYZus{}subgraph}\PY{p}{,} \PY{n}{center}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{dim}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{seed}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{nx}\PY{o}{.}\PY{n}{draw}\PY{p}{(}\PY{n}{smallest\PYZus{}subgraph}\PY{p}{,} \PY{n}{node\PYZus{}color}\PY{o}{=}\PY{n}{colors\PYZus{}full}\PY{p}{,} \PY{n}{node\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{30}\PY{p}{,} \PY{n}{linewidths}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{edge\PYZus{}color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{black}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.5}\PY{p}{,} \PY{n}{pos}\PY{o}{=}\PY{n}{poz}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{suptitle}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Graph no. }\PY{l+s+si}{\PYZob{}}\PY{n}{min\PYZus{}idx}\PY{o}{+}\PY{l+m+mi}{1}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ with predicted node labels}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{k}{pass}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{project_files/project_32_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}

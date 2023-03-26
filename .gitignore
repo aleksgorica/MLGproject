@@ -3,3 +3,5 @@ dataset/*
 .vscode
 __pycache__
 local_*
+tmp/
+project_files/
