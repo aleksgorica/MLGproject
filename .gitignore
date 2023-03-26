@@ -2,4 +2,4 @@ dataset/*
 !dataset/note.txt
 .vscode
 __pycache__
-local_*config.json
+local_*
